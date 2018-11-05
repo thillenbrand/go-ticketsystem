@@ -3,6 +3,7 @@
 package main
 
 import (
+	auth "go-ticketsystem/pkg/authentication"
 	"log"
 	"net/http"
 )
@@ -14,6 +15,8 @@ func main() {
 	})
 
 	http.Handle("/", http.FileServer(http.Dir("./pkg/frontend")))
+	http.HandleFunc("/login", auth.LoginHandler)
+	//http.HandleFunc("/ticket", auth.Wrapper(auth.LoginHandler)) todo: Wrapper läuft noch nicht
 
 	err := http.ListenAndServeTLS(":443", "server.crt", "server.key", nil)
 	if err != nil {
