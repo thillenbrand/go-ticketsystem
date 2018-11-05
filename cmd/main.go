@@ -18,7 +18,7 @@ func main() {
 	http.HandleFunc("/login", auth.LoginHandler)
 	//http.HandleFunc("/ticket", auth.Wrapper(auth.LoginHandler)) todo: Wrapper läuft noch nicht
 
-	err := http.ListenAndServeTLS(":443", "server.crt", "server.key", nil)
+	err := http.ListenAndServeTLS(":443", "Server.crt", "Server.key", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
