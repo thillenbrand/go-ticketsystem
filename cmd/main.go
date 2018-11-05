@@ -10,6 +10,7 @@ import (
 
 func main() {
 
+	// todo: brauchen wir das hier noch?
 	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, r.URL.Path[1:])
 	})
