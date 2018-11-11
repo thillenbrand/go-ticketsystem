@@ -14,13 +14,18 @@ func main() {
 		http.ServeFile(w, r, r.URL.Path[1:])
 	})
 
-	http.Handle("/", http.FileServer(http.Dir("./pkg/frontend")))
+	http.Handle("/", testWrapper(auth.LoginHandler)) //todo: testWrapper läuft, implementation fehlt - vllt besser über authenticator?
 	http.HandleFunc("/login", auth.LoginHandler)
-	//http.HandleFunc("/ticket", auth.Wrapper(auth.LoginHandler)) todo: Wrapper läuft noch nicht
 
 	err := http.ListenAndServeTLS(":443", "Server.crt", "Server.key", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
+
+}
+
+func testWrapper(handler http.HandlerFunc) http.Handler {
+
+	return http.FileServer(http.Dir("./pkg/frontend"))
 
 }
