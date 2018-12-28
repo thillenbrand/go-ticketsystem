@@ -71,7 +71,8 @@ func testWrapper(handler http.HandlerFunc) http.Handler {
 
 func openTickets() {
 	files, err := ioutil.ReadDir("./pkg/tickets/")
-	var tickets []Ticket
+	var tickets []Tickets
+	var temporary Tickets
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -83,10 +84,17 @@ func openTickets() {
 			fmt.Println(errorJ)
 		}
 		fmt.Println("Successfully Opened " + file.Name())
-		defer jsonFile.Close()
 		value, _ := ioutil.ReadAll(jsonFile)
-		json.Unmarshal(value, &tickets)
+		err := json.Unmarshal(value, &temporary)
+		if err != nil {
+			fmt.Println(err)
+		}
+		tickets = append(tickets, temporary)
 		fmt.Println(tickets)
+		err = jsonFile.Close()
+		if err != nil {
+			fmt.Println(err)
+		}
 
 	}
 
@@ -102,7 +110,10 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	defer jsonFile.Close()
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	var tickets Tickets
-	json.Unmarshal(byteValue, &tickets)
+	err := json.Unmarshal(byteValue, &tickets)
+	if err != nil {
+		fmt.Println(err)
+	}
 	p := Page{ID: tickets.Tickets[0].ID, SDescription: tickets.Tickets[0].SDescription,
 		Description: tickets.Tickets[0].Description, UName: tickets.Tickets[0].UName, Email: tickets.Tickets[0].Email}
 	t, _ := template.ParseFiles("./pkg/frontend/dashboard.html")
