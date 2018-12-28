@@ -46,8 +46,8 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	openTickets()
-
-	http.HandleFunc("/", auth.Wrapper(mainHandler))
+	http.Handle("/", http.FileServer(http.Dir("./pkg/frontend")))
+	http.HandleFunc("/dashboard", auth.Wrapper(mainHandler))
 
 	/*
 		http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
@@ -55,7 +55,8 @@ func main() {
 		})
 	*/
 
-	http.HandleFunc("/dashboard.html", dashboardHandler)
+	//http.HandleFunc("/dashboard.html", dashboardHandler)
+	http.HandleFunc("/dashboard.html", auth.Wrapper(dashboardHandler))
 	http.HandleFunc("/ticketDetail.html", ticketDetailHandler)
 	http.HandleFunc("/tickets.html", ticketsHandler)
 
@@ -116,6 +117,8 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 		Description: tickets.Tickets[0].Description, UName: tickets.Tickets[0].UName, Email: tickets.Tickets[0].Email}
 	t, _ := template.ParseFiles("./pkg/frontend/dashboard.html")
 	t.Execute(w, p)
+
+	http.FileServer(http.Dir("./pkg/frontend")).ServeHTTP(w, r)
 }
 
 func ticketDetailHandler(w http.ResponseWriter, r *http.Request) {
