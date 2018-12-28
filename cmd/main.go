@@ -72,12 +72,13 @@ func testWrapper(handler http.HandlerFunc) http.Handler {
 func openTickets() {
 	files, err := ioutil.ReadDir("./pkg/tickets/")
 	var tickets []Tickets
-	var temporary Tickets
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for _, file := range files {
+		var temporary Tickets
 		fmt.Println(file.Name())
 		jsonFile, errorJ := os.Open("./pkg/tickets/" + file.Name())
 		if errorJ != nil {
