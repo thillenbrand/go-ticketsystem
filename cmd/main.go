@@ -5,7 +5,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"go-ticketsystem/pkg/authentication"
+	auth "go-ticketsystem/pkg/authentication"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -45,12 +45,12 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	http.HandleFunc("/", authentication.Wrapper(mainHandler))
-	/*
-		http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, r.URL.Path[1:])
-		})
-	*/
+	openTickets()
+
+	http.HandleFunc("/", auth.Wrapper(mainHandler))
+	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, r.URL.Path[1:])
+	})
 
 	http.HandleFunc("/dashboard.html", dashboardHandler)
 	http.HandleFunc("/ticketDetail.html", ticketDetailHandler)
@@ -63,16 +63,57 @@ func main() {
 
 }
 
+func testWrapper(handler http.HandlerFunc) http.Handler {
+
+	return http.FileServer(http.Dir("./pkg/frontend"))
+
+}
+
+func openTickets() {
+	files, err := ioutil.ReadDir("./pkg/tickets/")
+	var tickets []Tickets
+	var temporary Tickets
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, file := range files {
+		fmt.Println(file.Name())
+		jsonFile, errorJ := os.Open("./pkg/tickets/" + file.Name())
+		if errorJ != nil {
+			fmt.Println(errorJ)
+		}
+		fmt.Println("Successfully Opened " + file.Name())
+		value, _ := ioutil.ReadAll(jsonFile)
+		err := json.Unmarshal(value, &temporary)
+		if err != nil {
+			fmt.Println(err)
+		}
+		tickets = append(tickets, temporary)
+		fmt.Println(tickets)
+		err = jsonFile.Close()
+		if err != nil {
+			fmt.Println(err)
+		}
+
+	}
+
+	fmt.Println(tickets)
+}
+
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
-	jsonFile, errorJ := os.Open("./pkg/frontend/tickets.json")
+	jsonFile, errorJ := os.Open("./pkg/tickets/ticket1.json")
 	if errorJ != nil {
 		fmt.Println(errorJ)
 	}
-	fmt.Println("Successfully Opened tickets.json")
+	fmt.Println("Successfully Opened ticket1.json")
 	defer jsonFile.Close()
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	var tickets Tickets
-	json.Unmarshal(byteValue, &tickets)
+	err := json.Unmarshal(byteValue, &tickets)
+	if err != nil {
+		fmt.Println(err)
+	}
 	p := Page{ID: tickets.Tickets[0].ID, SDescription: tickets.Tickets[0].SDescription,
 		Description: tickets.Tickets[0].Description, UName: tickets.Tickets[0].UName, Email: tickets.Tickets[0].Email}
 	t, _ := template.ParseFiles("./pkg/frontend/dashboard.html")
@@ -80,11 +121,11 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ticketDetailHandler(w http.ResponseWriter, r *http.Request) {
-	jsonFile, errorJ := os.Open("./pkg/frontend/tickets.json")
+	jsonFile, errorJ := os.Open("./pkg/tickets/ticket1.json")
 	if errorJ != nil {
 		fmt.Println(errorJ)
 	}
-	fmt.Println("Successfully Opened tickets.json")
+	fmt.Println("Successfully Opened ticket1.json")
 	defer jsonFile.Close()
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	var tickets Tickets
@@ -96,11 +137,11 @@ func ticketDetailHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ticketsHandler(w http.ResponseWriter, r *http.Request) {
-	jsonFile, errorJ := os.Open("./pkg/frontend/tickets.json")
+	jsonFile, errorJ := os.Open("./pkg/tickets/ticket1.json")
 	if errorJ != nil {
 		fmt.Println(errorJ)
 	}
-	fmt.Println("Successfully Opened tickets.json")
+	fmt.Println("Successfully Opened ticket1.json")
 	defer jsonFile.Close()
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	var tickets Tickets
