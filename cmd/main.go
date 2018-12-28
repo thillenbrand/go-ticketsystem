@@ -5,7 +5,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"go-ticketsystem/pkg/authentication"
+	auth "go-ticketsystem/pkg/authentication"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -45,12 +45,12 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	http.HandleFunc("/", authentication.Wrapper(mainHandler))
-	/*
-		http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, r.URL.Path[1:])
-		})
-	*/
+	openTickets()
+
+	http.HandleFunc("/", auth.Wrapper(mainHandler))
+	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, r.URL.Path[1:])
+	})
 
 	http.HandleFunc("/dashboard.html", dashboardHandler)
 	http.HandleFunc("/ticketDetail.html", ticketDetailHandler)
@@ -61,6 +61,36 @@ func main() {
 		log.Fatal("ListenAndServe: ", err)
 	}
 
+}
+
+func testWrapper(handler http.HandlerFunc) http.Handler {
+
+	return http.FileServer(http.Dir("./pkg/frontend"))
+
+}
+
+func openTickets() {
+	files, err := ioutil.ReadDir("./pkg/tickets/")
+	var tickets []Ticket
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, file := range files {
+		fmt.Println(file.Name())
+		jsonFile, errorJ := os.Open("./pkg/tickets/" + file.Name())
+		if errorJ != nil {
+			fmt.Println(errorJ)
+		}
+		fmt.Println("Successfully Opened " + file.Name())
+		defer jsonFile.Close()
+		value, _ := ioutil.ReadAll(jsonFile)
+		json.Unmarshal(value, &tickets)
+		fmt.Println(tickets)
+
+	}
+
+	fmt.Println(tickets)
 }
 
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
