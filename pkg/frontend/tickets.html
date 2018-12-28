@@ -119,33 +119,33 @@
           <div class="card mb-3">
             <div class="card-header">
               <i class="fas fa-table"></i>
-              Tickets</div>
-              <br>
-              <div class="row">
-                  <div class="col-xl-3 col-sm-6 mb-3">
-                      <div class="card text-black bg-white o-hidden h-100">
-                          <a class="card-body" href="ticketDetail.html">
-                              <!--<div class="card-body-icon">
-                                  <i class="fas fa-fw fa-comments"></i>
-                              </div>-->
-                              <div class="mr-5">Ticket Nr.1 - WIFI Problem</div>
-                          </a>
-                          <div class="card-footer text-black clearfix small z-1">
-                              <span class="float-left" style="text-overflow: ellipsis;overflow: hidden; line-height: 1.8em; max-height: 9em">Description: Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</span>
+              Your tickets:
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="card text-black bg-white o-hidden h-100">
+                  <a class="card-body" href="ticketDetail.html">
+                    <!--<div class="card-body-icon">
+                        <i class="fas fa-fw fa-comments"></i>
+                    </div>-->
+                    <div class="mr-5">Ticket Nr.{{.ID}} - {{.SDescription}}</div>
+                  </a>
+                  <div class="card-footer text-black clearfix small z-1">
+                    <span class="float-left" style="text-overflow: ellipsis;overflow: hidden; line-height: 1.8em; max-height: 9em">Description: {{.Description}}</span>
 
-                          </div>
-                          <div class="card-footer text-black clearfix small z-1">
-                              <span class="float-left">Name: </span>
-                          </div>
-                          <div class="card-footer text-black clearfix small z-1">
-                              <span class="float-left">Surname: </span>
-                          </div>
-                          <div class="card-footer text-black clearfix small z-1">
-                              <span class="float-left">E-Mail: </span>
-                          </div>
-                      </div>
                   </div>
+                  <div class="card-footer text-black clearfix small z-1">
+                    <span class="float-left">Name: {{.UName}}</span>
+                  </div>
+                  <div class="card-footer text-black clearfix small z-1">
+                    <span class="float-left">E-Mail: {{.Email}}</span>
+                  </div>
+                </div>
               </div>
+            </div>
+            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+          </div>
             <!--<div class="card-body">
               <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
