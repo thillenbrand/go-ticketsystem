@@ -100,7 +100,6 @@ func openTickets() {
 	}
 
 	fmt.Println(tickets)
-	return tickets
 }
 
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
