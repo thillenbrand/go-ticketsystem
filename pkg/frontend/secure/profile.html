@@ -79,6 +79,23 @@
                 <a class="dropdown-item" href="#">Activity Log</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#" onclick="logout()">Logout</a>
+                <script>
+                    function logout (c) {
+
+                        var a,b="Logout is complete";
+
+                        try {
+                            a=document.execCommand("ClearAuthenticationCache")
+                        }
+                        catch(d) {
+                        }
+
+                        a||((a=window.XMLHttpRequest?new window.XMLHttpRequest:window.ActiveXObject?new ActiveXObject("Microsoft.XMLHTTP"):void 0)?(a.open("HEAD",c||location.href,!0,"logout",(new Date).getTime().toString()),a.send(""),a=1):a=void 0);
+                        a||(b="Your browser is too old or too weird to support log out functionality. Close all windows and restart the browser or manually clear your authentication cache.");
+
+                        alert(b)
+                    }
+                </script>
             </div>
         </li>
     </ul>
@@ -161,7 +178,6 @@
 
 <!-- Bootstrap core JavaScript-->
 <script src="../vendor/jquery/jquery.min.js"></script>
-<script src="../../authentication/logout.js"></script>
 <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 <!-- Core plugin JavaScript-->
