@@ -69,7 +69,7 @@ func testWrapper(handler http.HandlerFunc) http.Handler {
 
 }
 
-func openTickets() {
+func openTickets() []Tickets {
 	files, err := ioutil.ReadDir("./pkg/tickets/")
 	var tickets []Tickets
 
@@ -91,7 +91,6 @@ func openTickets() {
 			fmt.Println(err)
 		}
 		tickets = append(tickets, temporary)
-		fmt.Println(tickets)
 		err = jsonFile.Close()
 		if err != nil {
 			fmt.Println(err)
@@ -100,6 +99,7 @@ func openTickets() {
 	}
 
 	fmt.Println(tickets)
+	return tickets
 }
 
 func dashboardHandler(w http.ResponseWriter, r *http.Request) {
