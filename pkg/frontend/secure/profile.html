@@ -12,16 +12,16 @@
     <title>Go Ticketsystem</title>
 
     <!-- Bootstrap core CSS-->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template-->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 
     <!-- Page level plugin CSS-->
     <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="css/sb-admin.css" rel="stylesheet">
+    <link href="../css/sb-admin.css" rel="stylesheet">
 
 </head>
 
@@ -29,7 +29,7 @@
 
 <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-    <a class="navbar-brand mr-1" href="dashboard.html">Go Ticketsystem - View Ticket Details</a>
+    <a class="navbar-brand mr-1" href="dashboard.html">Go Ticketsystem</a>
 
 
     <!-- Navbar Search -->
@@ -78,7 +78,24 @@
                 <a class="dropdown-item" href="profile.html">Profile</a>
                 <a class="dropdown-item" href="#">Activity Log</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#" onclick="logout()">Logout</a>
+                <script>
+                    function logout (c) {
+
+                        var a,b="Logout is complete";
+
+                        try {
+                            a=document.execCommand("ClearAuthenticationCache")
+                        }
+                        catch(d) {
+                        }
+
+                        a||((a=window.XMLHttpRequest?new window.XMLHttpRequest:window.ActiveXObject?new ActiveXObject("Microsoft.XMLHTTP"):void 0)?(a.open("HEAD",c||location.href,!0,"logout",(new Date).getTime().toString()),a.send(""),a=1):a=void 0);
+                        a||(b="Your browser is too old or too weird to support log out functionality. Close all windows and restart the browser or manually clear your authentication cache.");
+
+                        alert(b)
+                    }
+                </script>
             </div>
         </li>
     </ul>
@@ -108,37 +125,27 @@
 
             <!-- Icon Cards-->
 
-            <h3>Ticket Nr.{{.ID}}</h3>
+            <h3>Profile</h3>
 
-
+            Urlaub:
+            <label class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+            </label>
+            <br>
             <form>
-                <div class="form-group">
-                    <div class="form-label-group">
-                        <input type="text" id="inputSDescription" class="form-control" placeholder="Description"
-                               required="required" autofocus="autofocus" readonly>
-                        <label for="inputSDescription">{{.SDescription}}</label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="form-label-group">
-                        <div class="textarea">
-                            <textarea name="text" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
-                                      class="form-control" placeholder="Enter description of your problem here" readonly>{{.Description}}</textarea>
-                        </div>
-                    </div>
-                </div>
                 <div class="form-group">
                     <div class="form-label-group">
                         <input type="text" id="inputName" class="form-control" placeholder="Name"
                                required="required" autofocus="autofocus" readonly>
-                        <label for="inputName">{{.UName}}</label>
+                        <label for="inputName">John Doe</label>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="form-label-group">
                         <input type="email" id="inputEmail" class="form-control" placeholder="Email address"
                                required="required" autofocus="autofocus" readonly>
-                        <label for="inputEmail">{{.Email}}</label>
+                        <label for="inputEmail">john.doe@test.com</label>
                     </div>
                 </div>
             </form>
@@ -163,37 +170,18 @@
 </div>
 <!-- /#wrapper -->
 
-
 <!-- Scroll to Top Button-->
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
 
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="index.html">Logout</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Bootstrap core JavaScript-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../vendor/jquery/jquery.min.js"></script>
+<script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 <!-- Core plugin JavaScript-->
-<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
 
 <!-- Page level plugin JavaScript-->
 <script src="vendor/chart.js/Chart.min.js"></script>
