@@ -48,12 +48,9 @@ func main() {
 	openTickets()
 
 	http.HandleFunc("/", auth.Wrapper(mainHandler))
-
-	/*
-		http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, r.URL.Path[1:])
-		})
-	*/
+	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, r.URL.Path[1:])
+	})
 
 	http.HandleFunc("/dashboard.html", dashboardHandler)
 	http.HandleFunc("/ticketDetail.html", ticketDetailHandler)
@@ -63,6 +60,12 @@ func main() {
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
+
+}
+
+func testWrapper(handler http.HandlerFunc) http.Handler {
+
+	return http.FileServer(http.Dir("./pkg/frontend"))
 
 }
 
