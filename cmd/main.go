@@ -5,7 +5,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	 "go-ticketsystem/pkg/authentication"
+	"go-ticketsystem/pkg/authentication"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -47,26 +47,19 @@ func main() {
 
 	http.HandleFunc("/", authentication.Wrapper(mainHandler))
 	/*
-	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, r.URL.Path[1:])
-	})
+		http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+			http.ServeFile(w, r, r.URL.Path[1:])
+		})
 	*/
 
 	http.HandleFunc("/dashboard.html", dashboardHandler)
 	http.HandleFunc("/ticketDetail.html", ticketDetailHandler)
 	http.HandleFunc("/tickets.html", ticketsHandler)
 
-
 	err := http.ListenAndServeTLS(":443", "Server.crt", "Server.key", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
-
-}
-
-func testWrapper(handler http.HandlerFunc) http.Handler {
-
-	return http.FileServer(http.Dir("./pkg/frontend"))
 
 }
 
