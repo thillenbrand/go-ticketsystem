@@ -86,7 +86,7 @@
 
     <!-- Sidebar -->
     <ul class="sidebar navbar-nav">
-        <li class="nav-item active">
+        <li class="nav-item">
             <a class="nav-link" href="dashboard.html">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Dashboard</span>
@@ -95,7 +95,22 @@
         <li class="nav-item">
             <a class="nav-link" href="tickets.html">
                 <i class="fas fa-fw fa-table"></i>
-                <span>Tickets</span></a>
+                <span>All Tickets</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="ticketsOpen.html">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Open Tickets</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="ticketsProcessing.html">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Tickets in processing</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="ticketsClosed.html">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Closed Tickets</span></a>
         </li>
     </ul>
 
@@ -117,18 +132,29 @@
                 <div class="form-group">
                     <div class="form-label-group">
                         <input type="text" id="inputName" class="form-control" placeholder="Name"
-                               required="required" autofocus="autofocus" readonly>
+                               required="required" autofocus="autofocus">
                         <label for="inputName">John Doe</label>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="form-label-group">
                         <input type="email" id="inputEmail" class="form-control" placeholder="Email address"
-                               required="required" autofocus="autofocus" readonly>
+                               required="required" autofocus="autofocus">
                         <label for="inputEmail">john.doe@test.com</label>
                     </div>
                 </div>
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <input type="text" id="inputID" class="form-control" placeholder="Editor ID"
+                               required="required" autofocus="autofocus">
+                        <label for="inputID">1234</label>
+                    </div>
+                </div>
             </form>
+            <br>
+            <hr>
+            <a class="btn btn-primary btn-block " href="profile.html">Speichern</a>
+            <a class="btn btn-secondary btn-block" href="profile.html">Abbruch</a>
         </div>
 
 
