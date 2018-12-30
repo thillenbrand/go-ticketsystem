@@ -141,11 +141,11 @@
                     {{range $i, $ticket := .Tickets}}
                         <div class="col-xl-3 col-sm-6 mb-3">
                             <div class="card text-black bg-white o-hidden h-100">
-                                <a class="card-body" href="ticketDetail.html">
+                                <a class="card-body" href="ticketDetail.html?{{$ticket.ID}}">
                                     <!--<div class="card-body-icon">
                                         <i class="fas fa-fw fa-comments"></i>
                                     </div>-->
-                                    <div class="mr-5">Ticket Nr.{{$ticket.ID}} - {{$ticket.Subject}}</div>
+                                    <div class="mr-5">Ticket Nr. {{$ticket.ID}} - {{$ticket.Subject}}</div>
                                 </a>
                                 <div class="card-footer text-black clearfix small z-1">
                                     <span class="float-left"
