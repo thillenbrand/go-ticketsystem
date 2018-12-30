@@ -162,26 +162,30 @@
                 </div>
                 <br>
                 <div class="row">
+                    {{range $i, $ticket := .Tickets}}
                     <div class="col-xl-3 col-sm-6 mb-3">
                         <div class="card text-black bg-white o-hidden h-100">
                             <a class="card-body" href="ticketDetail.html">
                                 <!--<div class="card-body-icon">
                                     <i class="fas fa-fw fa-comments"></i>
                                 </div>-->
-                                <div class="mr-5">Ticket Nr.{{.ID}} - {{.SDescription}}</div>
+                                <div class="mr-5">Ticket Nr.{{$ticket.ID}} - {{$ticket.Subject}}</div>
                             </a>
                             <div class="card-footer text-black clearfix small z-1">
-                                <span class="float-left" style="text-overflow: ellipsis;overflow: hidden; line-height: 1.8em; max-height: 9em">Description: {{.Description}}</span>
+                                <span class="float-left" style="text-overflow: ellipsis;overflow: hidden; line-height: 1.8em; max-height: 9em">Status: {{$ticket.Status}}</span>
 
                             </div>
                             <div class="card-footer text-black clearfix small z-1">
-                                <span class="float-left">Name: {{.UName}}</span>
+                                <span class="float-left">IDEditor: {{$ticket.IDEditor}}</span>
                             </div>
+                            {{range $i, $entry := .Entry}}
                             <div class="card-footer text-black clearfix small z-1">
-                                <span class="float-left">E-Mail: {{.Email}}</span>
+                                <span class="float-left">{{$entry.Date}} - {{$entry.Author}}:<br>{{$entry.Text}}</span>
                             </div>
+                            {{end}}
                         </div>
                     </div>
+                    {{end}}
                 </div>
                 <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
             </div>
