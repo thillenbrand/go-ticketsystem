@@ -1,21 +1,23 @@
 {
-  "ticket": [
+  "ID": 2,
+  "Subject": "Problem",
+  "Status": "in Bearbeitung",
+  "IDEditor": 1234,
+  "Entry": [
     {
-      "ID": 2,
-      "SDescription": "Help",
-      "Description": "PC",
-      "UName": "Hans Wurst",
-      "Email": "hans.wurst@nix.de",
-      "Commentary": [
-        {
-          "Name": "2.1",
-          "Text": "Blabla2.1"
-        },
-        {
-          "Name": "2.2",
-          "Text": "Blabla2.2"
-        }
-      ]
+      "Date": "30.12.2018",
+      "Author": "hans@wurst.com",
+      "Text": "Blablabla1.1"
+    },
+    {
+      "Date": "31.12.2018",
+      "Author": "John Doe2",
+      "Text": "Blablabla1.2"
+    },
+    {
+      "Date": "01.01.2019",
+      "Author": "hans@wurst.com",
+      "Text": "Blablabla1.3"
     }
   ]
 }
