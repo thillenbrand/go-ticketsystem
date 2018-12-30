@@ -1,0 +1,23 @@
+{
+  "ID": 4,
+  "Subject": "Problem",
+  "Status": "offen",
+  "IDEditor": 0,
+  "Entry": [
+    {
+      "Date": "30.12.2018",
+      "Author": "hans@wurst.com",
+      "Text": "Blablabla1.1"
+    },
+    {
+      "Date": "31.12.2018",
+      "Author": "John Doe2",
+      "Text": "Blablabla1.2"
+    },
+    {
+      "Date": "01.01.2019",
+      "Author": "hans@wurst.com",
+      "Text": "Blablabla1.3"
+    }
+  ]
+}

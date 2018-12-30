@@ -26,7 +26,7 @@
 
 <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-    <a class="navbar-brand mr-1" href="dashboard.html">Go Ticketsystem - View Ticket Details</a>
+    <a class="navbar-brand mr-1" href="../index.html">Go Ticketsystem</a>
 
 
     <!-- Navbar Search -->
@@ -90,7 +90,7 @@
 
     <!-- Sidebar -->
     <ul class="sidebar navbar-nav">
-        <li class="nav-item active">
+        <li class="nav-item">
             <a class="nav-link" href="dashboard.html">
                 <i class="fas fa-fw fa-tachometer-alt"></i>
                 <span>Dashboard</span>
@@ -99,40 +99,84 @@
         <li class="nav-item">
             <a class="nav-link" href="tickets.html">
                 <i class="fas fa-fw fa-table"></i>
-                <span>Tickets</span></a>
+                <span>All Tickets</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="ticketsOpen.html">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Open Tickets</span></a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="ticketsProcessing.html">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Tickets in processing</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="ticketsClosed.html">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Closed Tickets</span></a>
         </li>
     </ul>
 
     <div id="content-wrapper">
-        {{range $i, $ticket := .Tickets}}
+
         <div class="container-fluid">
-            <h3>Ticket Nr.{{$ticket.ID}} - {{$ticket.Subject}}</h3>
-            <h6>{{.Status}}</h6>
-            <h6>Bearbeiter: {{.IDEditor}}</h6>
-            {{range $i, $entry := .Entry}}
-            <hr>
-            {{$entry.Date}} - {{$entry.Author}}:<br>
-            {{$entry.Text}}
-            {{end}}
-        </div>
-        {{end}}
 
+            <!-- Breadcrumbs-->
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="dashboard.html">Dashboard</a>
+                </li>
+                <li class="breadcrumb-item active">Tickets</li>
+            </ol>
 
-        <!-- Sticky Footer -->
-        <footer class="sticky-footer">
-            <div class="container my-auto">
-                <div class="copyright text-center my-auto">
-                    <span>Copyright © Go-Ticketsystem 2018</span>
+            <!-- DataTables Example -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fas fa-table"></i>
+                    Tickets in Processing:
                 </div>
+                <br>
+                <div class="row">
+                    {{range $i, $ticket := .Tickets}}
+                        <div class="col-xl-3 col-sm-6 mb-3">
+                            <div class="card text-black bg-white o-hidden h-100">
+                                <a class="card-body" href="ticketDetail.html">
+                                    <!--<div class="card-body-icon">
+                                        <i class="fas fa-fw fa-comments"></i>
+                                    </div>-->
+                                    <div class="mr-5">Ticket Nr.{{$ticket.ID}} - {{$ticket.Subject}}</div>
+                                </a>
+                                <div class="card-footer text-black clearfix small z-1">
+                                    <span class="float-left"
+                                          style="text-overflow: ellipsis;overflow: hidden; line-height: 1.8em; max-height: 9em">Status: {{$ticket.Status}}</span>
+
+                                </div>
+                                <div class="card-footer text-black clearfix small z-1">
+                                    <span class="float-left">IDEditor: {{$ticket.IDEditor}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {{end}}
+                </div>
+                <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+
             </div>
-        </footer>
+            <!-- /.container-fluid -->
 
+            <!-- Sticky Footer -->
+            <footer class="sticky-footer">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright © Your Website 2018</span>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
     </div>
-    <!-- /.content-wrapper -->
-
 </div>
 <!-- /#wrapper -->
-
 
 <!-- Scroll to Top Button-->
 <a class="scroll-to-top rounded" href="#page-top">
