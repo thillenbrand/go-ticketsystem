@@ -119,9 +119,8 @@
     </ul>
 
     <div id="content-wrapper">
-        {{range $i, $ticket := .Tickets}}
         <div class="container-fluid">
-            <h3>Ticket Nr.{{$ticket.ID}} - {{$ticket.Subject}}</h3>
+            <h3>Ticket Nr. {{.ID}} - {{.Subject}}</h3>
             <h6>{{.Status}}</h6>
             <h6>Bearbeiter: {{.IDEditor}}</h6>
             {{range $i, $entry := .Entry}}
@@ -130,7 +129,6 @@
             {{$entry.Text}}
             {{end}}
         </div>
-        {{end}}
 
 
         <!-- Sticky Footer -->
