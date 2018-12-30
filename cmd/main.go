@@ -21,8 +21,11 @@ func main() {
 	*/
 
 	http.HandleFunc("/secure/dashboard.html", hand.WrapperDashboard(mainHandler))
-	http.HandleFunc("/secure/ticketDetail", hand.WrapperTicketDet(mainHandler))
+	http.HandleFunc("/secure/ticketDetail.html", hand.WrapperTicketDet(mainHandler))
 	http.HandleFunc("/secure/tickets.html", hand.WrapperTickets(mainHandler))
+	http.HandleFunc("/secure/ticketsOpen.html", hand.WrapperOpenTickets(mainHandler))
+	http.HandleFunc("/secure/ticketsProcessing.html", hand.WrapperProTickets(mainHandler))
+	http.HandleFunc("/secure/ticketsClosed.html", hand.WrapperClosedTickets(mainHandler))
 	http.HandleFunc("/", auth.Wrapper(mainHandler))
 
 	err := http.ListenAndServeTLS(":443", "Server.crt", "Server.key", nil)

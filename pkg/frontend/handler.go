@@ -80,6 +80,60 @@ func WrapperTickets(handler http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
+func WrapperOpenTickets(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var tickets = openTickets()
+		var openTicket []Ticket
+		for i := 0; i < len(tickets); i++ {
+			if tickets[i].Status == "offen" {
+				openTicket = append(openTicket, tickets[i])
+			}
+		}
+		p := Tickets{openTicket}
+		t, _ := template.ParseFiles("./pkg/frontend/secure/ticketsOpen.html")
+		err := t.Execute(w, p)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+}
+
+func WrapperProTickets(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var tickets = openTickets()
+		var proTicket []Ticket
+		for i := 0; i < len(tickets); i++ {
+			if tickets[i].Status == "in Bearbeitung" {
+				proTicket = append(proTicket, tickets[i])
+			}
+		}
+		p := Tickets{proTicket}
+		t, _ := template.ParseFiles("./pkg/frontend/secure/ticketsProcessing.html")
+		err := t.Execute(w, p)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+}
+
+func WrapperClosedTickets(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var tickets = openTickets()
+		var closedTicket []Ticket
+		for i := 0; i < len(tickets); i++ {
+			if tickets[i].Status == "geschlossen" {
+				closedTicket = append(closedTicket, tickets[i])
+			}
+		}
+		p := Tickets{closedTicket}
+		t, _ := template.ParseFiles("./pkg/frontend/secure/ticketsClosed.html")
+		err := t.Execute(w, p)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+}
+
 func WrapperTicketDet(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var tickets = openTickets()

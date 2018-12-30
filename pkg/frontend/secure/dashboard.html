@@ -99,7 +99,22 @@
         <li class="nav-item">
             <a class="nav-link" href="tickets.html">
                 <i class="fas fa-fw fa-table"></i>
-                <span>Tickets</span></a>
+                <span>All Tickets</span></a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="ticketsOpen.html">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Open Tickets</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="ticketsProcessing.html">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Tickets in processing</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="ticketsClosed.html">
+                <i class="fas fa-fw fa-table"></i>
+                <span>Closed Tickets</span></a>
         </li>
     </ul>
 
@@ -116,7 +131,7 @@
             </ol>
 
             <!-- Icon Cards-->
-            <div class="row">
+            <!--<div class="row">
                 <div class="col-xl-6 col-sm-6 mb-3">
                     <div class="card text-white bg-primary o-hidden h-100">
                         <div class="card-body">
@@ -149,7 +164,7 @@
                         </a>
                     </div>
                 </div>
-            </div>
+            </div>-->
 
 
             <div class="card mb-3">
@@ -175,11 +190,6 @@
                             <div class="card-footer text-black clearfix small z-1">
                                 <span class="float-left">IDEditor: {{$ticket.IDEditor}}</span>
                             </div>
-                            {{range $i, $entry := .Entry}}
-                            <div class="card-footer text-black clearfix small z-1">
-                                <span class="float-left">{{$entry.Date}} - {{$entry.Author}}:<br>{{$entry.Text}}</span>
-                            </div>
-                            {{end}}
                         </div>
                     </div>
                     {{end}}
