@@ -141,9 +141,11 @@
                                 <div class="card-footer text-black clearfix small z-1">
                                     <span class="float-left">IDEditor: {{$ticket.IDEditor}}</span>
                                 </div>
-                                <div class="card-footer text-black clearfix small z-1">
-                                    <span class="float-left">Entry: {{$ticket.Entry}}</span>
-                                </div>
+                                {{range $i, $entry := .Entry}}
+                                    <div class="card-footer text-black clearfix small z-1">
+                                        <span class="float-left">{{$entry.Date}} - {{$entry.Author}}:<br>{{$entry.Text}}</span>
+                                    </div>
+                                {{end}}
                             </div>
                         </div>
                     {{end}}
