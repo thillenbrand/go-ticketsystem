@@ -59,7 +59,13 @@ func openTickets() []Ticket {
 func WrapperDashboard(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var tickets = openTickets()
-		p := Tickets{tickets}
+		var yourTicket []Ticket
+		for i := 0; i < len(tickets); i++ {
+			if tickets[i].IDEditor == 1234 {
+				yourTicket = append(yourTicket, tickets[i])
+			}
+		}
+		p := Tickets{yourTicket}
 		t, _ := template.ParseFiles("./pkg/frontend/secure/dashboard.html")
 		err := t.Execute(w, p)
 		if err != nil {
