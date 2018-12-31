@@ -119,19 +119,40 @@
     </ul>
 
     <div id="content-wrapper">
-        <div class="container-fluid">
-            <h3>Ticket Nr. {{.ID}} - {{.Subject}}</h3>
-            <h6>{{.Status}}</h6>
-            <h6>Bearbeiter: {{.IDEditor}}</h6>
-            {{range $i, $entry := .Entry}}
-            <hr>
-            {{$entry.Date}} - {{$entry.Author}}:<br>
-            {{$entry.Text}}
-            {{end}}
-        </div>
-        <hr>
 
-        <a class="btn btn-primary btn-block " style="margin-left: 5%; width: 90%" href="entry.html?{{.ID}}">Kommentar hinzufügen</a>
+        <div class="container-fluid">
+
+            <!-- Icon Cards-->
+
+            <h3>Kommentar hinzufügen</h3>
+            <br>
+            <form>
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <input type="text" id="inputDate" class="form-control" placeholder="Date"
+                               required="required" autofocus="autofocus">
+                        <label for="inputDate">Datum</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <input type="email" id="inputEmail" class="form-control" placeholder="Email address"
+                               required="required" autofocus="autofocus">
+                        <label for="inputEmail">E-Mail-Adresse oder Name</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-label-group">
+                        <textarea id="inputText" class="form-control" placeholder="Text" required="required" autofocus="autofocus"></textarea>
+                    </div>
+                </div>
+            </form>
+            <br>
+            <hr>
+            <a class="btn btn-primary btn-block " href="ticketDetail.html?{{.ID}}">Speichern</a>
+            <a class="btn btn-secondary btn-block" href="ticketDetail.html?{{.ID}}">Abbruch</a>
+        </div>
+
 
 
         <!-- Sticky Footer -->

@@ -165,3 +165,51 @@ func WrapperTicketDet(handler http.HandlerFunc) http.HandlerFunc {
 		}
 	}
 }
+
+func WrapperEntry(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var tickets = openTickets()
+		q := r.URL.String()
+		q = strings.Split(q, "?")[1]
+		id, err := strconv.Atoi(q)
+		if err != nil {
+			fmt.Println(err)
+		}
+		var ticketDet Ticket
+		for i := 0; i < len(tickets); i++ {
+			if tickets[i].ID == id {
+				ticketDet = tickets[i]
+			}
+		}
+		p := Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+		t, _ := template.ParseFiles("./pkg/frontend/secure/entry.html")
+		err = t.Execute(w, p)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+}
+
+func WrapperSave(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var tickets = openTickets()
+		q := r.URL.String()
+		q = strings.Split(q, "?")[1]
+		id, err := strconv.Atoi(q)
+		if err != nil {
+			fmt.Println(err)
+		}
+		var ticketDet Ticket
+		for i := 0; i < len(tickets); i++ {
+			if tickets[i].ID == id {
+				ticketDet = tickets[i]
+			}
+		}
+		p := Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+		t, _ := template.ParseFiles("./pkg/frontend/secure/ticketDetail.html")
+		err = t.Execute(w, p)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+}
