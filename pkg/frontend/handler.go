@@ -212,7 +212,6 @@ func WrapperSave(handler http.HandlerFunc) http.HandlerFunc {
 		}
 		ticketDet.Entry = append(ticketDet.Entry, newEntry)
 		ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
-		fmt.Println(ticket)
 		err = ticket.save()
 		if err != nil {
 			fmt.Println(err)
