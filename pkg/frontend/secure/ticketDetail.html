@@ -145,7 +145,7 @@
             <br>
         </form>
         {{else}}
-        <form action="#" method="POST">
+        <form action="/secure/take/ticket{{.ID}}?{{.ID}}" method="POST">
             <div><input type="submit" value="Ticket übernehmen" class="btn btn-secondary btn-block"></div>
             <br>
         </form>
