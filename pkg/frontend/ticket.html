@@ -17,9 +17,6 @@
     <!-- Custom fonts for this template-->
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 
-    <!-- Page level plugin CSS-->
-    <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
-
     <!-- Custom styles for this template-->
     <link href="css/sb-admin.css" rel="stylesheet">
 
@@ -40,7 +37,7 @@
                 <i class="fas fa-user-circle fa-fw"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#loginModal">Login</a>
+                <a class="dropdown-item" href="secure/dashboard.html">Login</a>
             </div>
         </li>
     </ul>
@@ -63,13 +60,6 @@
                         <input type="text" id="inputName" class="form-control" placeholder="Name"
                                required="required" autofocus="autofocus">
                         <label for="inputName">Name</label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="form-label-group">
-                    <input type="text" id="inputSurname" class="form-control" placeholder="Surname"
-                           required="required" autofocus="autofocus">
-                    <label for="inputSurname">Surname</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -141,64 +131,12 @@
     </div>
 </div>
 
-<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="card-header">Login</div>
-            <div class="card-body">
-                <form>
-                    <div class="form-group">
-                        <div class="form-label-group">
-                            <input type="email" id="inputEmail" class="form-control" placeholder="Email address"
-                                   required="required" autofocus="autofocus">
-                            <label for="inputEmail">Email address</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="form-label-group">
-                            <input type="password" id="inputPassword" class="form-control" placeholder="Password"
-                                   required="required">
-                            <label for="inputPassword">Password</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" value="remember-me">
-                                Remember Password
-                            </label>
-                        </div>
-                    </div>
-                    <a class="btn btn-primary btn-block" href="dashboard.html">Login</a>
-                </form>
-                <div class="text-center">
-                    <a class="d-block small mt-3" href="register.html">Register an Account</a>
-                    <a class="d-block small" href="forgot-password.html">Forgot Password?</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Bootstrap core JavaScript-->
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 <!-- Core plugin JavaScript-->
 <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Page level plugin JavaScript-->
-<script src="vendor/chart.js/Chart.min.js"></script>
-<script src="vendor/datatables/jquery.dataTables.js"></script>
-<script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="js/sb-admin.min.js"></script>
-
-<!-- Demo scripts for this page-->
-<script src="js/demo/datatables-demo.js"></script>
-<script src="js/demo/chart-area-demo.js"></script>
 
 </body>
 
