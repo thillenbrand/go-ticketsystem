@@ -169,6 +169,7 @@ func WrapperTicketDet(handler http.HandlerFunc) http.HandlerFunc {
 func WrapperEntry(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var tickets = openTickets()
+
 		q := r.URL.String()
 		q = strings.Split(q, "?")[1]
 		id, err := strconv.Atoi(q)
@@ -192,6 +193,10 @@ func WrapperEntry(handler http.HandlerFunc) http.HandlerFunc {
 
 func WrapperSave(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		date := r.FormValue("inputDate")
+		author := r.FormValue("inputName")
+		text := r.FormValue("inputText")
+		newEntry := Entry{date, author, text}
 		var tickets = openTickets()
 		q := r.URL.String()
 		q = strings.Split(q, "?")[1]
@@ -205,11 +210,22 @@ func WrapperSave(handler http.HandlerFunc) http.HandlerFunc {
 				ticketDet = tickets[i]
 			}
 		}
-		p := Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
-		t, _ := template.ParseFiles("./pkg/frontend/secure/ticketDetail.html")
-		err = t.Execute(w, p)
+		ticketDet.Entry = append(ticketDet.Entry, newEntry)
+		ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+		fmt.Println(ticket)
+		err = ticket.save()
 		if err != nil {
 			fmt.Println(err)
 		}
+		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 	}
+}
+
+func (t *Ticket) save() error {
+	filename := "./pkg/tickets/ticket" + strconv.Itoa(t.ID) + ".json"
+	ticket, err := json.Marshal(t)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return ioutil.WriteFile(filename, ticket, 0600)
 }
