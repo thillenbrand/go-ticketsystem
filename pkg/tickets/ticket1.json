@@ -1,25 +1,43 @@
 {
-  "ticket": [
+  "ID": 1,
+  "Subject": "Problem",
+  "Status": "offen",
+  "IDEditor": 0,
+  "Entry": [
     {
-      "ID": 1,
-      "SDescription": "Problem",
-      "Description": "Wifi",
-      "UName": "Hinz und Kunz",
-      "Email": "hinz@kunz.com",
-      "Commentary": [
-        {
-          "Name": "1.1",
-          "Text": "Blabla1.1"
-        },
-        {
-          "Name": "1.2",
-          "Text": "Blabla1.2"
-        },
-        {
-          "Name": "1.3",
-          "Text": "Blabla1.3"
-        }
-      ]
+      "Date": "30.12.2017",
+      "Author": "hinz@kunz.com",
+      "Text": "Blablabla1.1"
+    },
+    {
+      "Date": "31.12.2017",
+      "Author": "John Doe",
+      "Text": "Blablabla1.2"
+    },
+    {
+      "Date": "01.01.2018",
+      "Author": "hinz@kunz.com",
+      "Text": "Blablabla1.3"
+    },
+    {
+      "Date": "01.01.2018",
+      "Author": "hinz@kunz.com",
+      "Text": "Blablabla1.3"
+    },
+    {
+      "Date": "01.01.2018",
+      "Author": "hinz@kunz.com",
+      "Text": "Blablabla1.3"
+    },
+    {
+      "Date": "01.01.2018",
+      "Author": "hinz@kunz.com",
+      "Text": "Blablabla1.3"
+    },
+    {
+      "Date": "01.01.2018",
+      "Author": "hinz@kunz.com",
+      "Text": "Blablabla1.3"
     }
   ]
 }

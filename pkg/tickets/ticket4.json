@@ -1,8 +1,8 @@
 {
-  "ID": 2,
+  "ID": 4,
   "Subject": "Problem",
-  "Status": "in Bearbeitung",
-  "IDEditor": 1234,
+  "Status": "offen",
+  "IDEditor": 0,
   "Entry": [
     {
       "Date": "30.12.2018",

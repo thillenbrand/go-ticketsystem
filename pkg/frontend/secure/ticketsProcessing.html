@@ -26,13 +26,14 @@
 
 <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
-    <a class="navbar-brand mr-1" href="dashboard.html">Go Ticketsystem</a>
+    <a class="navbar-brand mr-1" href="../index.html">Go Ticketsystem</a>
 
 
     <!-- Navbar Search -->
     <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
         <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+            <input type="text" class="form-control" placeholder="Search for..." aria-label="Search"
+                   aria-describedby="basic-addon2">
             <div class="input-group-append">
                 <button class="btn btn-primary" type="button">
                     <i class="fas fa-search"></i>
@@ -44,7 +45,8 @@
     <!-- Navbar -->
     <ul class="navbar-nav ml-auto ml-md-0">
         <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
                 <span class="badge badge-danger">9+</span>
             </a>
@@ -56,7 +58,8 @@
             </div>
         </li>
         <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-envelope fa-fw"></i>
                 <span class="badge badge-danger">7</span>
             </a>
@@ -68,7 +71,8 @@
             </div>
         </li>
         <li class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-user-circle fa-fw"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
@@ -102,7 +106,7 @@
                 <i class="fas fa-fw fa-table"></i>
                 <span>Open Tickets</span></a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
             <a class="nav-link" href="ticketsProcessing.html">
                 <i class="fas fa-fw fa-table"></i>
                 <span>Tickets in processing</span></a>
@@ -118,59 +122,59 @@
 
         <div class="container-fluid">
 
-            <!-- Icon Cards-->
+            <!-- Breadcrumbs-->
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="dashboard.html">Dashboard</a>
+                </li>
+                <li class="breadcrumb-item active">Tickets</li>
+            </ol>
 
-            <h3>Profile</h3>
-
-            Urlaub:
-            <label class="switch">
-                <input type="checkbox">
-                <span class="slider round"></span>
-            </label>
-            <br>
-            <form>
-                <div class="form-group">
-                    <div class="form-label-group">
-                        <input type="text" id="inputName" class="form-control" placeholder="Name"
-                               required="required" autofocus="autofocus">
-                        <label for="inputName">John Doe</label>
-                    </div>
+            <!-- DataTables Example -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <i class="fas fa-table"></i>
+                    Tickets in Processing:
                 </div>
-                <div class="form-group">
-                    <div class="form-label-group">
-                        <input type="email" id="inputEmail" class="form-control" placeholder="Email address"
-                               required="required" autofocus="autofocus">
-                        <label for="inputEmail">john.doe@test.com</label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="form-label-group">
-                        <input type="text" id="inputID" class="form-control" placeholder="Editor ID"
-                               required="required" autofocus="autofocus">
-                        <label for="inputID">1234</label>
-                    </div>
-                </div>
-            </form>
-            <br>
-            <hr>
-            <a class="btn btn-primary btn-block " href="profile.html">Speichern</a>
-            <a class="btn btn-secondary btn-block" href="profile.html">Abbruch</a>
-        </div>
+                <br>
+                <div class="row">
+                    {{range $i, $ticket := .Tickets}}
+                        <div class="col-xl-3 col-sm-6 mb-3">
+                            <div class="card text-black bg-white o-hidden h-100">
+                                <a class="card-body" href="ticketDetail.html?{{$ticket.ID}}">
+                                    <!--<div class="card-body-icon">
+                                        <i class="fas fa-fw fa-comments"></i>
+                                    </div>-->
+                                    <div class="mr-5">Ticket Nr. {{$ticket.ID}} - {{$ticket.Subject}}</div>
+                                </a>
+                                <div class="card-footer text-black clearfix small z-1">
+                                    <span class="float-left"
+                                          style="text-overflow: ellipsis;overflow: hidden; line-height: 1.8em; max-height: 9em">Status: {{$ticket.Status}}</span>
 
-
-
-        <!-- Sticky Footer -->
-        <footer class="sticky-footer">
-            <div class="container my-auto">
-                <div class="copyright text-center my-auto">
-                    <span>Copyright © Go-Ticketsystem 2018</span>
+                                </div>
+                                <div class="card-footer text-black clearfix small z-1">
+                                    <span class="float-left">IDEditor: {{$ticket.IDEditor}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {{end}}
                 </div>
+                <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+
             </div>
-        </footer>
+            <!-- /.container-fluid -->
 
+            <!-- Sticky Footer -->
+            <footer class="sticky-footer">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright © Your Website 2018</span>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
     </div>
-    <!-- /.content-wrapper -->
-
 </div>
 <!-- /#wrapper -->
 
@@ -178,7 +182,6 @@
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
-
 
 <!-- Bootstrap core JavaScript-->
 <script src="../vendor/jquery/jquery.min.js"></script>
