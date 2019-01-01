@@ -10,6 +10,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Entry struct {
@@ -194,7 +195,7 @@ func WrapperEntry(handler http.HandlerFunc) http.HandlerFunc {
 func WrapperSave(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		subject := r.FormValue("inputSubject")
-		date := r.FormValue("inputDate")
+		date := time.Now().Local().Format("2006-01-02 15:04")
 		author := r.FormValue("inputName")
 		text := r.FormValue("inputText")
 		newEntry := Entry{date, author, text}

@@ -1,12 +1,18 @@
-function logout (c) {
-    var a,b="Logout is complete";
-    try {
-        a=document.execCommand("ClearAuthenticationCache")
-    }
-    catch(d) {
-    }
-    a||((a=window.XMLHttpRequest?new window.XMLHttpRequest:window.ActiveXObject?new ActiveXObject("Microsoft.XMLHTTP"):void 0)?(a.open("HEAD",c||location.href,!0,"logout",(new Date).getTime().toString()),a.send(""),a=1):a=void 0);
-    a||(b="Your browser is too old or too weird to support log out functionality. Close all windows and restart the browser or manually clear your authentication cache.");
-    alert(b);
-    location.replace("/index.html")
+function logout() {
+    $.ajax({
+        type: "GET",
+        url: "PUT_YOUR_PROTECTED_URL_HERE",
+        dataType: 'json',
+        async: true,
+        username: "some_username_that_doesn't_exist",
+        password: "any_stupid_password",
+        data: '{ "comment" }'
+    })
+        .done(function(){
+            alert('Der genutzte Browser ist zu alt oder zu speziell und unterstützt den Logout nicht. Bitte schließen sie ihren Browser oder löschen sie ihren Authentifizierungs-Cache.')
+        })
+        .fail(function(){
+            alert('Logout abgeschlossen.');
+            window.location = "/";
+        });
 }
