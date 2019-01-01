@@ -222,7 +222,7 @@ func WrapperSave(handler http.HandlerFunc) http.HandlerFunc {
 			visible = false
 		}
 		newEntry := Entry{date, author, text, visible}
-		var tickets = openTickets()
+		tickets := openTickets()
 		var ticketDet Ticket
 		var id int
 		var err error
@@ -315,6 +315,54 @@ func WrapperTake(handler http.HandlerFunc) http.HandlerFunc {
 			}
 		}
 		ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+		err = ticket.save()
+		if err != nil {
+			fmt.Println(err)
+		}
+		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+	}
+}
+
+func WrapperAdd(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var tickets = openTickets()
+		q := r.URL.String()
+		q = strings.Split(q, "?")[1]
+		id, err := strconv.Atoi(q)
+		if err != nil {
+			fmt.Println(err)
+		}
+		idToAdd, err := strconv.Atoi(r.FormValue("ticketToAdd"))
+		if err != nil {
+			fmt.Println(err)
+		}
+		var ticketDet Ticket
+		for i := 0; i < len(tickets); i++ {
+			if tickets[i].ID == id {
+				ticketDet = tickets[i]
+				break
+			}
+		}
+		var ticketToAdd Ticket
+		for i := 0; i < len(tickets); i++ {
+			if tickets[i].ID == idToAdd {
+				ticketToAdd = tickets[i]
+				break
+			}
+		}
+		for i := 0; i < len(ticketToAdd.Entry); i++ {
+			ticketDet.Entry = append(ticketDet.Entry, ticketToAdd.Entry[i])
+		}
+		ticketToAdd.Status = "geschlossen"
+		entryClosed := Entry{Date: time.Now().Local().Format("2006-01-02"), Author: "System", Text: "Das Ticket wurde wegen Zusammenführung geschlossen. Die Einträge wurden in Ticket Nr. " + strconv.Itoa(ticketDet.ID) + " übertragen."}
+		ticketToAdd.Entry = append(ticketToAdd.Entry, entryClosed)
+
+		ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+		err = ticket.save()
+		if err != nil {
+			fmt.Println(err)
+		}
+		ticket = &Ticket{ID: ticketToAdd.ID, Subject: ticketToAdd.Subject, Status: ticketToAdd.Status, Assigned: ticketToAdd.Assigned, IDEditor: ticketToAdd.IDEditor, Entry: ticketToAdd.Entry}
 		err = ticket.save()
 		if err != nil {
 			fmt.Println(err)

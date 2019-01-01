@@ -124,40 +124,48 @@
             <h6>{{.Status}}</h6>
             <h6>Bearbeiter: {{.IDEditor}}</h6>
             {{range $i, $entry := .Entry}}
+                <hr>
+                {{$entry.Date}} - {{$entry.Author}}:<br>
+                {{$entry.Text}}
+            {{end}}
+
             <hr>
-            {{$entry.Date}} - {{$entry.Author}}:<br>
-            {{$entry.Text}}
+
+            <a class="btn btn-primary btn-block" href="entry.html?{{.ID}}">Kommentar hinzufügen</a>
+            <br>
+
+
+            {{if .Assigned}}
+                <form action="/secure/release/ticket{{.ID}}?{{.ID}}" method="POST">
+                    <div><input type="submit" value="Ticket freigeben" class="btn btn-secondary btn-block"></div>
+                    <br>
+                </form>
+                <form action="#" method="POST">
+                    <div><input type="submit" value="Ticket anderem Bearbeiter zuweisen"
+                                class="btn btn-secondary btn-block"></div>
+                    <br>
+                </form>
+            {{else}}
+                <form action="/secure/take/ticket{{.ID}}?{{.ID}}" method="POST">
+                    <div><input type="submit" value="Ticket übernehmen" class="btn btn-secondary btn-block"></div>
+                    <br>
+                </form>
             {{end}}
-
-        <hr>
-
-        <a class="btn btn-primary btn-block" href="entry.html?{{.ID}}">Kommentar hinzufügen</a>
-        <br>
-
-
-        {{if .Assigned}}
-        <form action="/secure/release/ticket{{.ID}}?{{.ID}}" method="POST">
-            <div><input type="submit" value="Ticket freigeben" class="btn btn-secondary btn-block"></div>
-            <br>
-        </form>
-        <form action="#" method="POST">
-            <div><input type="submit" value="Ticket anderem Bearbeiter zuweisen" class="btn btn-secondary btn-block"></div>
-            <br>
-        </form>
-        {{else}}
-        <form action="/secure/take/ticket{{.ID}}?{{.ID}}" method="POST">
-            <div><input type="submit" value="Ticket übernehmen" class="btn btn-secondary btn-block"></div>
-            <br>
-        </form>
-        {{end}}
-        <h4>Tickets zusammenführen:</h4>
-
-        <select>
-            <option value="default">Ticket zum Anhängen auswählen</option>
-            {{range $i, $ticket := .Tickets}}
-            <option value="{{$ticket.ID}}">Ticket Nr. {{$ticket.ID}} - {{$ticket.Subject}}</option>
-            {{end}}
-        </select>
+            <hr>
+            <form action="/secure/add/ticket{{.ID}}?{{.ID}}" method="POST">
+                <h4>Tickets zusammenführen:</h4>
+                Das aktuelle Ticket bleibt erhalten, während die Kommentare des ausgewählten Tickets angehängt und das Ticket geschlossen wird.<br>
+                <select name="ticketToAdd">
+                    <option value="default">Ticket zum Anhängen auswählen</option>
+                    {{range $i, $ticket := .Tickets}}
+                        <option value="{{$ticket.ID}}">Ticket Nr. {{$ticket.ID}}
+                            - {{$ticket.Subject}}</option>
+                    {{end}}
+                </select>
+                <br><br>
+                <div><input type="submit" value="Ticket zusammenführen" class="btn btn-secondary btn-block"></div>
+                <br>
+            </form>
         </div>
         <!-- Sticky Footer -->
         <footer class="sticky-footer">
