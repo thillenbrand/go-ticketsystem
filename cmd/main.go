@@ -3,12 +3,10 @@
 package main
 
 import (
-	"fmt"
 	auth "go-ticketsystem/pkg/authentication"
 	hand "go-ticketsystem/pkg/frontend"
 	"log"
 	"net/http"
-	"time"
 )
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
@@ -16,8 +14,6 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-
-	fmt.Println(time.Now().Local().Format("2006-01-02 15:04"))
 	/*
 		http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
 			http.ServeFile(w, r, r.URL.Path[1:])

@@ -5,17 +5,17 @@
   "IDEditor": 1234,
   "Entry": [
     {
-      "Date": "2018-12-30 15:00",
+      "Date": "2018-12-30",
       "Author": "hans@wurst.com",
       "Text": "Blablabla1.1"
     },
     {
-      "Date": "2018-12-30 15:00",
+      "Date": "2018-12-30",
       "Author": "John Doe2",
       "Text": "Blablabla1.2"
     },
     {
-      "Date": "2018-12-30 15:00",
+      "Date": "2018-12-30",
       "Author": "hans@wurst.com",
       "Text": "Blablabla1.3"
     }
