@@ -23,6 +23,7 @@ type Ticket struct {
 	ID       int     `json:"ID"`
 	Subject  string  `json:"Subject"`
 	Status   string  `json:"Status"`
+	Assigned bool    `json:"Assigned"`
 	IDEditor int     `json:"IDEditor"`
 	Entry    []Entry `json:"Entry"`
 }
@@ -158,8 +159,9 @@ func WrapperTicketDet(handler http.HandlerFunc) http.HandlerFunc {
 				ticketDet = tickets[i]
 			}
 		}
-		p := Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+		p := Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
 		t, _ := template.ParseFiles("./pkg/frontend/secure/ticketDetail.html")
+
 		err = t.Execute(w, p)
 		if err != nil {
 			fmt.Println(err)
@@ -183,7 +185,7 @@ func WrapperEntry(handler http.HandlerFunc) http.HandlerFunc {
 				ticketDet = tickets[i]
 			}
 		}
-		p := Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+		p := Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
 		t, _ := template.ParseFiles("./pkg/frontend/secure/entry.html")
 		err = t.Execute(w, p)
 		if err != nil {
@@ -195,7 +197,7 @@ func WrapperEntry(handler http.HandlerFunc) http.HandlerFunc {
 func WrapperSave(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		subject := r.FormValue("inputSubject")
-		date := time.Now().Local().Format("2006-01-02 15:04")
+		date := time.Now().Local().Format("2006-01-02")
 		author := r.FormValue("inputName")
 		text := r.FormValue("inputText")
 		newEntry := Entry{date, author, text}
@@ -217,7 +219,7 @@ func WrapperSave(handler http.HandlerFunc) http.HandlerFunc {
 				}
 			}
 			ticketDet.Entry = append(ticketDet.Entry, newEntry)
-			ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+			ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
 			err = ticket.save()
 			if err != nil {
 				fmt.Println(err)
@@ -228,9 +230,10 @@ func WrapperSave(handler http.HandlerFunc) http.HandlerFunc {
 			ticketDet.ID = tickets[len(tickets)-1].ID + 1
 			ticketDet.Subject = subject
 			ticketDet.Status = "offen"
+			ticketDet.Assigned = false
 			ticketDet.IDEditor = 0
 			ticketDet.Entry = append(ticketDet.Entry, newEntry)
-			ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+			ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
 			err = ticket.save()
 			if err != nil {
 				fmt.Println(err)
@@ -238,6 +241,40 @@ func WrapperSave(handler http.HandlerFunc) http.HandlerFunc {
 			http.Redirect(w, r, "/index.html", http.StatusFound)
 		}
 
+	}
+}
+
+func WrapperRelease(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var tickets = openTickets()
+		q := r.URL.String()
+		q = strings.Split(q, "?")[1]
+		id, err := strconv.Atoi(q)
+		if err != nil {
+			fmt.Println(err)
+		}
+		var ticketDet Ticket
+		for i := 0; i < len(tickets); i++ {
+			if tickets[i].ID == id {
+				tickets[i].Status = "offen"
+				tickets[i].Assigned = false
+				tickets[i].IDEditor = 0
+				ticketDet = tickets[i]
+				break
+			}
+		}
+		ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+		err = ticket.save()
+		if err != nil {
+			fmt.Println(err)
+		}
+		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+		/*p := Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+		t, _ := template.ParseFiles("./pkg/frontend/secure/ticketDetail.html")
+		err = t.Execute(w, p)
+		if err != nil {
+			fmt.Println(err)
+		}*/
 	}
 }
 
