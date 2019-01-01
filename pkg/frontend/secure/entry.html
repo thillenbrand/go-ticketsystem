@@ -126,33 +126,33 @@
 
             <h3>Kommentar hinzufügen</h3>
             <br>
-            <form>
+            <form action="/secure/save/ticket{{.ID}}?{{.ID}}" method="POST">
                 <div class="form-group">
                     <div class="form-label-group">
-                        <input type="text" id="inputDate" class="form-control" placeholder="Date"
+                        <input type="date" name="inputDate" id="inputDate" class="form-control" placeholder="Date"
                                required="required" autofocus="autofocus">
                         <label for="inputDate">Datum</label>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="form-label-group">
-                        <input type="email" id="inputEmail" class="form-control" placeholder="Email address"
+                        <input type="text" name="inputName" id="inputName" class="form-control" placeholder="Email address"
                                required="required" autofocus="autofocus">
-                        <label for="inputEmail">E-Mail-Adresse oder Name</label>
+                        <label for="inputName">E-Mail-Adresse oder Name</label>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="form-label-group">
-                        <textarea id="inputText" class="form-control" placeholder="Text" required="required" autofocus="autofocus"></textarea>
+                        <textarea name="inputText" class="form-control" placeholder="Text" required="required"
+                                  autofocus="autofocus"></textarea>
                     </div>
                 </div>
+                <hr>
+                <div><input type="submit" value="Speichern" class="btn btn-primary btn-block"></div>
+                <br>
+                <a class="btn btn-secondary btn-block" href="ticketDetail.html?{{.ID}}">Abbruch</a>
             </form>
-            <br>
-            <hr>
-            <a class="btn btn-primary btn-block " href="ticketDetail.html?{{.ID}}">Speichern</a>
-            <a class="btn btn-secondary btn-block" href="ticketDetail.html?{{.ID}}">Abbruch</a>
         </div>
-
 
 
         <!-- Sticky Footer -->
