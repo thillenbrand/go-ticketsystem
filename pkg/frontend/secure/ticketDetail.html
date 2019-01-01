@@ -154,7 +154,7 @@
             <hr>
             <form action="/secure/add/ticket{{.ID}}?{{.ID}}" method="POST">
                 <h4>Tickets zusammenführen:</h4>
-                Das aktuelle Ticket bleibt erhalten, während die Kommentare des ausgewählten Tickets angehängt und das Ticket geschlossen wird.<br>
+                Das aktuelle Ticket bleibt erhalten, während die Kommentare des ausgewählten Tickets angehängt und das Ticket geschlossen wird. Die Aktion wird nur ausgeführt, wenn beide Tickets denselben Bearbeiter haben.<br>
                 <select name="ticketToAdd">
                     <option value="default">Ticket zum Anhängen auswählen</option>
                     {{range $i, $ticket := .Tickets}}
