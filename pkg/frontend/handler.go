@@ -368,8 +368,11 @@ func WrapperAdd(handler http.HandlerFunc) http.HandlerFunc {
 			if err != nil {
 				fmt.Println(err)
 			}
+			http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+		} else {
+			alert := "<script>alert('Zusammenführung fehlgeschlagen. Die Tickets haben nicht denselben Bearbeiter.');window.location = '/secure/ticketDetail.html?" + strconv.Itoa(ticketDet.ID) + "';</script>"
+			fmt.Fprintf(w, alert)
 		}
-		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 	}
 }
 
