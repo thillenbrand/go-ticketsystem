@@ -1,27 +1,29 @@
 package backend
 
-import "fmt"
+import (
+	"fmt"
+)
 
 var ticketIDCounter int = 0
-var tickets =[]ticket{}
+var tickets = []ticket{}
 
 type entry struct {
-	date string
-	entryCreatorID string
-	text string
+	date            string
+	entryCreatorID  string
+	text            string
 	visibleForUsers bool
 }
 
 type ticket struct {
 	ticketID int
-	subject string
-	status string
+	subject  string
+	status   string
 	editorID string
-	entries []entry
-	visible bool
+	entries  []entry
+	visible  bool
 }
 
-func ticketCreate(subject string, status string, editorID string) (newTicket ticket){
+func ticketCreate(subject string, status string, editorID string) (newTicket ticket) {
 
 	if subject == "" {
 		fmt.Println("Subject empty!")
@@ -29,7 +31,7 @@ func ticketCreate(subject string, status string, editorID string) (newTicket tic
 	} else if status == "" {
 		fmt.Println("Status empty!")
 		return
-	} else if status != "offen" && status != "in Bearbeitung" && status != "geschlossen"{
+	} else if status != "offen" && status != "in Bearbeitung" && status != "geschlossen" {
 		fmt.Println("Invalid status!")
 		return
 	} else {
@@ -50,19 +52,19 @@ func ticketCreate(subject string, status string, editorID string) (newTicket tic
 	}
 }
 
-func ticketAssign(ticketID int, newEditorID string){
+func ticketAssign(ticketID int, newEditorID string) {
 	tickets[ticketID].editorID = newEditorID
 	tickets[ticketID].status = "in Bearbeitung"
 	tickets[ticketID].visible = false
 }
 
-func ticketRelease(ticketID int){
+func ticketRelease(ticketID int) {
 	tickets[ticketID].editorID = ""
 	tickets[ticketID].status = "offen"
 	tickets[ticketID].visible = true
 }
 
-func entryCreate(ticketID int, date string, entryCreatorID string, text string) (newEntry entry){
+func entryCreate(ticketID int, date string, entryCreatorID string, text string, visible bool) (newEntry entry) {
 	if date == "" {
 		fmt.Println("Invalid date!")
 	} else if text == "" {
@@ -74,9 +76,19 @@ func entryCreate(ticketID int, date string, entryCreatorID string, text string) 
 
 		newEntry.text = text
 
-		newEntry.visibleForUsers = true
+		newEntry.visibleForUsers = visible
 
 		tickets[ticketID].entries = append(tickets[ticketID].entries, newEntry)
 	}
 	return
+}
+
+func ticketConcat(ticketID int, concatTicketID int) {
+	if tickets[ticketID].editorID == tickets[concatTicketID].editorID {
+		for i := 0; i < len(tickets[concatTicketID].entries); i++ {
+			tickets[ticketID].entries = append(tickets[ticketID].entries, tickets[concatTicketID].entries[i])
+		}
+	} else {
+		fmt.Println("Ticket cant be concated, different Editors!")
+	}
 }
