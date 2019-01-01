@@ -32,6 +32,16 @@ type Tickets struct {
 	Tickets []Ticket
 }
 
+type TicketsDet struct {
+	ID       int     `json:"ID"`
+	Subject  string  `json:"Subject"`
+	Status   string  `json:"Status"`
+	Assigned bool    `json:"Assigned"`
+	IDEditor int     `json:"IDEditor"`
+	Entry    []Entry `json:"Entry"`
+	Tickets  []Ticket
+}
+
 func openTickets() []Ticket {
 	files, err := ioutil.ReadDir("./pkg/tickets/")
 	var tickets []Ticket
@@ -157,9 +167,11 @@ func WrapperTicketDet(handler http.HandlerFunc) http.HandlerFunc {
 		for i := 0; i < len(tickets); i++ {
 			if tickets[i].ID == id {
 				ticketDet = tickets[i]
+				tickets = append(tickets[:i], tickets[i+1:]...)
+				break
 			}
 		}
-		p := Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+		p := TicketsDet{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry, Tickets: tickets}
 		t, _ := template.ParseFiles("./pkg/frontend/secure/ticketDetail.html")
 
 		err = t.Execute(w, p)
@@ -183,6 +195,7 @@ func WrapperEntry(handler http.HandlerFunc) http.HandlerFunc {
 		for i := 0; i < len(tickets); i++ {
 			if tickets[i].ID == id {
 				ticketDet = tickets[i]
+				break
 			}
 		}
 		p := Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
@@ -216,6 +229,7 @@ func WrapperSave(handler http.HandlerFunc) http.HandlerFunc {
 			for i := 0; i < len(tickets); i++ {
 				if tickets[i].ID == id {
 					ticketDet = tickets[i]
+					break
 				}
 			}
 			ticketDet.Entry = append(ticketDet.Entry, newEntry)
@@ -269,12 +283,6 @@ func WrapperRelease(handler http.HandlerFunc) http.HandlerFunc {
 			fmt.Println(err)
 		}
 		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
-		/*p := Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
-		t, _ := template.ParseFiles("./pkg/frontend/secure/ticketDetail.html")
-		err = t.Execute(w, p)
-		if err != nil {
-			fmt.Println(err)
-		}*/
 	}
 }
 
