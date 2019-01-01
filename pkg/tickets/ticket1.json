@@ -1,0 +1,43 @@
+{
+  "ID": 1,
+  "Subject": "Problem",
+  "Status": "offen",
+  "IDEditor": 0,
+  "Entry": [
+    {
+      "Date": "30.12.2017",
+      "Author": "hinz@kunz.com",
+      "Text": "Blablabla1.1"
+    },
+    {
+      "Date": "31.12.2017",
+      "Author": "John Doe",
+      "Text": "Blablabla1.2"
+    },
+    {
+      "Date": "01.01.2018",
+      "Author": "hinz@kunz.com",
+      "Text": "Blablabla1.3"
+    },
+    {
+      "Date": "01.01.2018",
+      "Author": "hinz@kunz.com",
+      "Text": "Blablabla1.3"
+    },
+    {
+      "Date": "01.01.2018",
+      "Author": "hinz@kunz.com",
+      "Text": "Blablabla1.3"
+    },
+    {
+      "Date": "01.01.2018",
+      "Author": "hinz@kunz.com",
+      "Text": "Blablabla1.3"
+    },
+    {
+      "Date": "01.01.2018",
+      "Author": "hinz@kunz.com",
+      "Text": "Blablabla1.3"
+    }
+  ]
+}

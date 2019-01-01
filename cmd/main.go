@@ -4,28 +4,36 @@ package main
 
 import (
 	auth "go-ticketsystem/pkg/authentication"
+	hand "go-ticketsystem/pkg/frontend"
 	"log"
 	"net/http"
 )
 
+func mainHandler(w http.ResponseWriter, r *http.Request) {
+	http.FileServer(http.Dir("./pkg/frontend")).ServeHTTP(w, r)
+}
+
 func main() {
+	/*
+		http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+			http.ServeFile(w, r, r.URL.Path[1:])
+		})
+	*/
 
-	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, r.URL.Path[1:])
-	})
+	http.HandleFunc("/secure/save/", hand.WrapperSave(mainHandler))
+	http.HandleFunc("/secure/dashboard.html", hand.WrapperDashboard(mainHandler))
+	http.HandleFunc("/secure/ticketDetail.html", hand.WrapperTicketDet(mainHandler))
+	http.HandleFunc("/secure/tickets.html", hand.WrapperTickets(mainHandler))
+	http.HandleFunc("/secure/ticketsOpen.html", hand.WrapperOpenTickets(mainHandler))
+	http.HandleFunc("/secure/ticketsProcessing.html", hand.WrapperProTickets(mainHandler))
+	http.HandleFunc("/secure/ticketsClosed.html", hand.WrapperClosedTickets(mainHandler))
+	http.HandleFunc("/secure/entry.html", hand.WrapperEntry(mainHandler))
 
-	http.Handle("/", testWrapper(auth.LoginHandler)) //todo: testWrapper läuft, implementation fehlt - vllt besser über authenticator?
-	http.HandleFunc("/login", auth.LoginHandler)
+	http.HandleFunc("/", auth.Wrapper(mainHandler))
 
 	err := http.ListenAndServeTLS(":443", "Server.crt", "Server.key", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
-
-}
-
-func testWrapper(handler http.HandlerFunc) http.Handler {
-
-	return http.FileServer(http.Dir("./pkg/frontend"))
 
 }
