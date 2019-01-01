@@ -14,9 +14,10 @@ import (
 )
 
 type Entry struct {
-	Date   string `json:"Date"`
-	Author string `json:"Author"`
-	Text   string `json:"Text"`
+	Date    string `json:"Date"`
+	Author  string `json:"Author"`
+	Text    string `json:"Text"`
+	Visible bool
 }
 
 type Ticket struct {
@@ -213,7 +214,14 @@ func WrapperSave(handler http.HandlerFunc) http.HandlerFunc {
 		date := time.Now().Local().Format("2006-01-02")
 		author := r.FormValue("inputName")
 		text := r.FormValue("inputText")
-		newEntry := Entry{date, author, text}
+		var visible bool
+		//visible = true -> auch für Ersteller sichtbar, visible = false -> nur für Bearbeiter sichtbar
+		if r.FormValue("visible") == "" {
+			visible = true
+		} else {
+			visible = false
+		}
+		newEntry := Entry{date, author, text, visible}
 		var tickets = openTickets()
 		var ticketDet Ticket
 		var id int
