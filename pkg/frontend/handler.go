@@ -294,6 +294,35 @@ func WrapperRelease(handler http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
+func WrapperTake(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var tickets = openTickets()
+		q := r.URL.String()
+		q = strings.Split(q, "?")[1]
+		id, err := strconv.Atoi(q)
+		if err != nil {
+			fmt.Println(err)
+		}
+		var ticketDet Ticket
+		for i := 0; i < len(tickets); i++ {
+			if tickets[i].ID == id {
+				tickets[i].Status = "in Bearbeitung"
+				tickets[i].Assigned = true
+				//To-Do: User ID auslesen
+				tickets[i].IDEditor = 1234
+				ticketDet = tickets[i]
+				break
+			}
+		}
+		ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+		err = ticket.save()
+		if err != nil {
+			fmt.Println(err)
+		}
+		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+	}
+}
+
 func (t *Ticket) save() error {
 	filename := "./pkg/tickets/ticket" + strconv.Itoa(t.ID) + ".json"
 	ticket, err := json.Marshal(t)
