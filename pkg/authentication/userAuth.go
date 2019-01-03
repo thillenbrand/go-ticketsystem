@@ -53,8 +53,9 @@ func checkUserValid(name, pswd string) bool {
 			LoggedUserID = u.ID
 			LoggedUserName = u.Name
 			LoggedUserVac = u.Vacation
-			fmt.Println("user: ", LoggedUserName, "| ID: ", LoggedUserID, "| Vacation: ", LoggedUserVac)
-			fmt.Println("---")
+			//fmt.Println("user: ", LoggedUserName, "| ID: ", LoggedUserID, "| Vacation: ", LoggedUserVac)
+			//fmt.Println("---")
+			//TODO: check mit Test ersetzen
 			return true
 			break
 		}
