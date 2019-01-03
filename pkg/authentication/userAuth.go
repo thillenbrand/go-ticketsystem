@@ -44,8 +44,8 @@ func checkUserValid(name, pswd string) bool {
 	for _, u := range users {
 		if u.Name == name && u.Pass == pswd {
 			return true
+			break
 		}
-		break
 	}
 	return false
 
