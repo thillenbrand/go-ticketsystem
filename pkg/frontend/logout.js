@@ -4,7 +4,7 @@ function logout() {
         url: "URL",
         dataType: 'json',
         async: true,
-        username: "some_username_noone_has",
+        username: "enter your username here",
         password: "any_password_not_used",
         data: '{ "comment" }'
     })
