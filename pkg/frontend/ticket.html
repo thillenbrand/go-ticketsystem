@@ -53,44 +53,34 @@
 
             <!-- Icon Cards-->
 
-
-            <form>
+            <h3>Ticket erstellen</h3>
+            <br>
+            <form action="/secure/save/ticket" method="POST">
                 <div class="form-group">
                     <div class="form-label-group">
-                        <input type="text" id="inputName" class="form-control" placeholder="Name"
+                        <input type="text" name="inputSubject" id="inputSubject" class="form-control" placeholder="Subject"
                                required="required" autofocus="autofocus">
-                        <label for="inputName">Name</label>
+                        <label for="inputSubject">Betreff</label>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="form-label-group">
-                        <input type="email" id="inputEmail" class="form-control" placeholder="Email address"
+                        <input type="email" name="inputName" id="inputName" class="form-control" placeholder="Email address"
                                required="required" autofocus="autofocus">
-                        <label for="inputEmail">Email address</label>
+                        <label for="inputName">E-Mail-Adresse</label>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="form-label-group">
-                        <input type="text" id="inputSDescription" class="form-control" placeholder="Description"
-                               required="required" autofocus="autofocus">
-                        <label for="inputSDescription">Short description</label>
+                        <textarea name="inputText" class="form-control" style="height: 15em" placeholder="Text" required="required"
+                                  autofocus="autofocus"></textarea>
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="form-label-group">
-                        <div class="textarea">
-                            <textarea name="text" oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'
-                                      class="form-control" placeholder="Enter description of your problem here"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <a class="btn btn-primary btn-block" href="#" data-toggle="modal" data-target="#ticketModal">Create ticket</a>
+                <hr>
+                <div><input type="submit" value="Speichern" class="btn btn-primary btn-block"></div>
+                <br>
+                <a class="btn btn-secondary btn-block" href="index.html">Abbruch</a>
             </form>
-
-
         </div>
         <!-- /.container-fluid -->
 
@@ -98,7 +88,7 @@
         <footer class="sticky-footer-index">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
-                    <span>Copyright © Go-Ticketsystem 2018</span>
+                    <span>Copyright © Go-Ticketsystem 2019</span>
                 </div>
             </div>
         </footer>
@@ -113,23 +103,6 @@
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
-
-<div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ticket successfully created!</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-footer">
-                <a class="btn btn-primary" href="index.html">OK</a>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Bootstrap core JavaScript-->
 <script src="vendor/jquery/jquery.min.js"></script>

@@ -2,42 +2,50 @@
   "ID": 1,
   "Subject": "Problem",
   "Status": "offen",
+  "Assigned": false,
   "IDEditor": 0,
   "Entry": [
     {
-      "Date": "30.12.2017",
+      "Date": "2017-12-01",
       "Author": "hinz@kunz.com",
-      "Text": "Blablabla1.1"
+      "Text": "Blablabla1.1",
+      "Visible": true
     },
     {
-      "Date": "31.12.2017",
+      "Date": "2017-12-01",
       "Author": "John Doe",
-      "Text": "Blablabla1.2"
+      "Text": "Blablabla1.2",
+      "Visible": true
     },
     {
-      "Date": "01.01.2018",
+      "Date": "2017-12-01",
       "Author": "hinz@kunz.com",
-      "Text": "Blablabla1.3"
+      "Text": "Blablabla1.3",
+      "Visible": true
     },
     {
-      "Date": "01.01.2018",
+      "Date": "2017-12-01",
       "Author": "hinz@kunz.com",
-      "Text": "Blablabla1.3"
+      "Text": "Blablabla1.3",
+      "Visible": true
     },
     {
-      "Date": "01.01.2018",
+      "Date": "2017-12-01",
       "Author": "hinz@kunz.com",
-      "Text": "Blablabla1.3"
+      "Text": "Blablabla1.3",
+      "Visible": true
     },
     {
-      "Date": "01.01.2018",
+      "Date": "2017-12-01",
       "Author": "hinz@kunz.com",
-      "Text": "Blablabla1.3"
+      "Text": "Blablabla1.3",
+      "Visible": true
     },
     {
-      "Date": "01.01.2018",
+      "Date": "2017-12-01",
       "Author": "hinz@kunz.com",
-      "Text": "Blablabla1.3"
+      "Text": "Blablabla1.3",
+      "Visible": true
     }
   ]
 }

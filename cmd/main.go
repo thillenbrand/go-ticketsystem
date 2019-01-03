@@ -20,9 +20,6 @@ func main() {
 		})
 	*/
 
-	http.HandleFunc("/", auth.Wrapper(mainHandler))
-
-	http.HandleFunc("/secure/save/", hand.WrapperSave(mainHandler))
 	http.HandleFunc("/secure/dashboard.html", hand.WrapperDashboard(mainHandler))
 	http.HandleFunc("/secure/ticketDetail.html", hand.WrapperTicketDet(mainHandler))
 	http.HandleFunc("/secure/tickets.html", hand.WrapperTickets(mainHandler))
@@ -30,6 +27,12 @@ func main() {
 	http.HandleFunc("/secure/ticketsProcessing.html", hand.WrapperProTickets(mainHandler))
 	http.HandleFunc("/secure/ticketsClosed.html", hand.WrapperClosedTickets(mainHandler))
 	http.HandleFunc("/secure/entry.html", hand.WrapperEntry(mainHandler))
+	http.HandleFunc("/secure/save/", hand.WrapperSave(mainHandler))
+	http.HandleFunc("/secure/release/", hand.WrapperRelease(mainHandler))
+	http.HandleFunc("/secure/take/", hand.WrapperTake(mainHandler))
+	http.HandleFunc("/secure/add/", hand.WrapperAdd(mainHandler))
+
+	http.HandleFunc("/", auth.Wrapper(mainHandler))
 
 	err := http.ListenAndServeTLS(":443", "Server.crt", "Server.key", nil)
 	if err != nil {

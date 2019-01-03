@@ -10,24 +10,37 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Entry struct {
-	Date   string `json:"Date"`
-	Author string `json:"Author"`
-	Text   string `json:"Text"`
+	Date    string `json:"Date"`
+	Author  string `json:"Author"`
+	Text    string `json:"Text"`
+	Visible bool
 }
 
 type Ticket struct {
 	ID       int     `json:"ID"`
 	Subject  string  `json:"Subject"`
 	Status   string  `json:"Status"`
+	Assigned bool    `json:"Assigned"`
 	IDEditor int     `json:"IDEditor"`
 	Entry    []Entry `json:"Entry"`
 }
 
 type Tickets struct {
 	Tickets []Ticket
+}
+
+type TicketsDet struct {
+	ID       int     `json:"ID"`
+	Subject  string  `json:"Subject"`
+	Status   string  `json:"Status"`
+	Assigned bool    `json:"Assigned"`
+	IDEditor int     `json:"IDEditor"`
+	Entry    []Entry `json:"Entry"`
+	Tickets  []Ticket
 }
 
 func openTickets() []Ticket {
@@ -155,10 +168,13 @@ func WrapperTicketDet(handler http.HandlerFunc) http.HandlerFunc {
 		for i := 0; i < len(tickets); i++ {
 			if tickets[i].ID == id {
 				ticketDet = tickets[i]
+				tickets = append(tickets[:i], tickets[i+1:]...)
+				break
 			}
 		}
-		p := Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+		p := TicketsDet{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry, Tickets: tickets}
 		t, _ := template.ParseFiles("./pkg/frontend/secure/ticketDetail.html")
+
 		err = t.Execute(w, p)
 		if err != nil {
 			fmt.Println(err)
@@ -180,9 +196,10 @@ func WrapperEntry(handler http.HandlerFunc) http.HandlerFunc {
 		for i := 0; i < len(tickets); i++ {
 			if tickets[i].ID == id {
 				ticketDet = tickets[i]
+				break
 			}
 		}
-		p := Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+		p := Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
 		t, _ := template.ParseFiles("./pkg/frontend/secure/entry.html")
 		err = t.Execute(w, p)
 		if err != nil {
@@ -193,10 +210,64 @@ func WrapperEntry(handler http.HandlerFunc) http.HandlerFunc {
 
 func WrapperSave(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		date := r.FormValue("inputDate")
+		subject := r.FormValue("inputSubject")
+		date := time.Now().Local().Format("2006-01-02")
 		author := r.FormValue("inputName")
 		text := r.FormValue("inputText")
-		newEntry := Entry{date, author, text}
+		var visible bool
+		//visible = true -> auch für Ersteller sichtbar, visible = false -> nur für Bearbeiter sichtbar
+		if r.FormValue("visible") == "" {
+			visible = true
+		} else {
+			visible = false
+		}
+		newEntry := Entry{date, author, text, visible}
+		tickets := openTickets()
+		var ticketDet Ticket
+		var id int
+		var err error
+		if subject == "" {
+			q := r.URL.String()
+			q = strings.Split(q, "?")[1]
+			id, err = strconv.Atoi(q)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			for i := 0; i < len(tickets); i++ {
+				if tickets[i].ID == id {
+					ticketDet = tickets[i]
+					break
+				}
+			}
+			ticketDet.Entry = append(ticketDet.Entry, newEntry)
+			ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+			err = ticket.save()
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+		} else {
+			ticketDet.ID = tickets[len(tickets)-1].ID + 1
+			ticketDet.Subject = subject
+			ticketDet.Status = "offen"
+			ticketDet.Assigned = false
+			ticketDet.IDEditor = 0
+			ticketDet.Entry = append(ticketDet.Entry, newEntry)
+			ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+			err = ticket.save()
+			if err != nil {
+				fmt.Println(err)
+			}
+			http.Redirect(w, r, "/index.html", http.StatusFound)
+		}
+
+	}
+}
+
+func WrapperRelease(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		var tickets = openTickets()
 		q := r.URL.String()
 		q = strings.Split(q, "?")[1]
@@ -207,16 +278,101 @@ func WrapperSave(handler http.HandlerFunc) http.HandlerFunc {
 		var ticketDet Ticket
 		for i := 0; i < len(tickets); i++ {
 			if tickets[i].ID == id {
+				tickets[i].Status = "offen"
+				tickets[i].Assigned = false
+				tickets[i].IDEditor = 0
 				ticketDet = tickets[i]
+				break
 			}
 		}
-		ticketDet.Entry = append(ticketDet.Entry, newEntry)
-		ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+		ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
 		err = ticket.save()
 		if err != nil {
 			fmt.Println(err)
 		}
 		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+	}
+}
+
+func WrapperTake(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var tickets = openTickets()
+		q := r.URL.String()
+		q = strings.Split(q, "?")[1]
+		id, err := strconv.Atoi(q)
+		if err != nil {
+			fmt.Println(err)
+		}
+		var ticketDet Ticket
+		for i := 0; i < len(tickets); i++ {
+			if tickets[i].ID == id {
+				tickets[i].Status = "in Bearbeitung"
+				tickets[i].Assigned = true
+				//To-Do: User ID auslesen
+				tickets[i].IDEditor = 1234
+				ticketDet = tickets[i]
+				break
+			}
+		}
+		ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+		err = ticket.save()
+		if err != nil {
+			fmt.Println(err)
+		}
+		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+	}
+}
+
+func WrapperAdd(handler http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var tickets = openTickets()
+		q := r.URL.String()
+		q = strings.Split(q, "?")[1]
+		id, err := strconv.Atoi(q)
+		if err != nil {
+			fmt.Println(err)
+		}
+		idToAdd, err := strconv.Atoi(r.FormValue("ticketToAdd"))
+		if err != nil {
+			fmt.Println(err)
+		}
+		var ticketDet Ticket
+		for i := 0; i < len(tickets); i++ {
+			if tickets[i].ID == id {
+				ticketDet = tickets[i]
+				break
+			}
+		}
+		var ticketToAdd Ticket
+		for i := 0; i < len(tickets); i++ {
+			if tickets[i].ID == idToAdd {
+				ticketToAdd = tickets[i]
+				break
+			}
+		}
+		if ticketToAdd.IDEditor == ticketDet.IDEditor {
+			for i := 0; i < len(ticketToAdd.Entry); i++ {
+				ticketDet.Entry = append(ticketDet.Entry, ticketToAdd.Entry[i])
+			}
+			ticketToAdd.Status = "geschlossen"
+			entryClosed := Entry{Date: time.Now().Local().Format("2006-01-02"), Author: "System", Text: "Das Ticket wurde wegen Zusammenführung geschlossen. Die Einträge wurden in Ticket Nr. " + strconv.Itoa(ticketDet.ID) + " übertragen."}
+			ticketToAdd.Entry = append(ticketToAdd.Entry, entryClosed)
+
+			ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+			err = ticket.save()
+			if err != nil {
+				fmt.Println(err)
+			}
+			ticket = &Ticket{ID: ticketToAdd.ID, Subject: ticketToAdd.Subject, Status: ticketToAdd.Status, Assigned: ticketToAdd.Assigned, IDEditor: ticketToAdd.IDEditor, Entry: ticketToAdd.Entry}
+			err = ticket.save()
+			if err != nil {
+				fmt.Println(err)
+			}
+			http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+		} else {
+			alert := "<script>alert('Zusammenführung fehlgeschlagen. Die Tickets haben nicht denselben Bearbeiter.');window.location = '/secure/ticketDetail.html?" + strconv.Itoa(ticketDet.ID) + "';</script>"
+			fmt.Fprintf(w, alert)
+		}
 	}
 }
 
