@@ -140,13 +140,13 @@
                     <div><input type="submit" value="Ticket freigeben" class="btn btn-secondary btn-block"></div>
                     <br>
                 </form>
-                <form action="#" method="POST">
+                <form action="/secure/assign/ticket{{.ID}}?{{.ID}}" method="POST">
                     <h4>Ticket anderem Bearbeiter zuweisen:</h4>
-                    <select name="ticketToAdd">
+                    <select name="userAssign">
                         <option value="default">Bearbeiter auswählen:</option>
                         {{range $i, $user := .Users}}
                             <option value="{{$user.ID}}">User {{$user.ID}}
-                                - {{$user.SName}}</option>
+                                - {{$user.Name}}</option>
                         {{end}}
                     </select>
                     <br><br>

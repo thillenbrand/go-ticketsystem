@@ -42,7 +42,7 @@ type TicketsDet struct {
 	IDEditor int     `json:"IDEditor"`
 	Entry    []Entry `json:"Entry"`
 	Tickets  []Ticket
-	Users    authentication.Users
+	Users    []authentication.User
 }
 
 func openTickets() []Ticket {
@@ -151,8 +151,13 @@ func HandlerClosedTickets(w http.ResponseWriter, r *http.Request) {
 
 func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 	var tickets = openTickets()
-	users := authentication.OpenUsers()
-	fmt.Println(users)
+	var users = authentication.OpenUsers()
+	var user []authentication.User
+	for i := 0; i < len(users.User); i++ {
+		if users.User[i].ID == authentication.LoggedUserID {
+			user = append(users.User[:i], users.User[i+1:]...)
+		}
+	}
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
@@ -167,7 +172,7 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
-	p := TicketsDet{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry, Tickets: tickets, Users: users}
+	p := TicketsDet{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry, Tickets: tickets, Users: user}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/ticketDetail.html")
 
 	err = t.Execute(w, p)
@@ -308,8 +313,34 @@ func HandlerTake(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerAssign(w http.ResponseWriter, r *http.Request) {
-	users := authentication.OpenUsers()
-	fmt.Println(users)
+	var tickets = openTickets()
+	q := r.URL.String()
+	q = strings.Split(q, "?")[1]
+	id, err := strconv.Atoi(q)
+	if err != nil {
+		fmt.Println(err)
+	}
+	idUser, err := strconv.Atoi(r.FormValue("userAssign"))
+	if err != nil {
+		fmt.Println(err)
+	}
+	var ticketDet Ticket
+	for i := 0; i < len(tickets); i++ {
+		if tickets[i].ID == id {
+			tickets[i].IDEditor = idUser
+			ticketDet = tickets[i]
+			break
+		}
+	}
+
+	ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+	err = ticket.save()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+
 }
 
 func HandlerAdd(w http.ResponseWriter, r *http.Request) {
