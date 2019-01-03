@@ -45,6 +45,8 @@ type TicketsDet struct {
 	Users    []authentication.User
 }
 
+type User = authentication.User
+
 func openTickets() []Ticket {
 	files, err := ioutil.ReadDir("./pkg/tickets/")
 	var tickets []Ticket
@@ -392,6 +394,23 @@ func HandlerAdd(w http.ResponseWriter, r *http.Request) {
 		alert := "<script>alert('Zusammenführung fehlgeschlagen. Die Tickets haben nicht denselben Bearbeiter.');window.location = '/secure/ticketDetail.html?" + strconv.Itoa(ticketDet.ID) + "';</script>"
 		fmt.Fprintf(w, alert)
 	}
+}
+
+func HandlerProfile(w http.ResponseWriter, r *http.Request) {
+	vac := r.FormValue("vac")
+	fmt.Println(vac)
+	user := authentication.User{ID: authentication.LoggedUserID, Name: authentication.LoggedUserName, Pass: "", Vacation: authentication.LoggedUserVac}
+	t, _ := template.ParseFiles("./pkg/frontend/secure/profile.html")
+	err := t.Execute(w, user)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func HandlerSaveProfile(w http.ResponseWriter, r *http.Request) {
+	vac := r.FormValue("vac")
+	fmt.Println(vac)
+	http.Redirect(w, r, "/secure/profile.html", http.StatusFound)
 }
 
 func (t *Ticket) save() error {

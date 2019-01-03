@@ -30,10 +30,12 @@ func main() {
 	http.HandleFunc("/secure/ticketsClosed.html", auth.Wrapper(hand.HandlerClosedTickets))
 	http.HandleFunc("/secure/entry.html", auth.Wrapper(hand.HandlerEntry))
 	http.HandleFunc("/secure/save/", auth.Wrapper(hand.HandlerSave))
+	http.HandleFunc("/secure/saveP/", auth.Wrapper(hand.HandlerSaveProfile))
 	http.HandleFunc("/secure/release/", auth.Wrapper(hand.HandlerRelease))
 	http.HandleFunc("/secure/take/", auth.Wrapper(hand.HandlerTake))
 	http.HandleFunc("/secure/add/", auth.Wrapper(hand.HandlerAdd))
 	http.HandleFunc("/secure/assign/", auth.Wrapper(hand.HandlerAssign))
+	http.HandleFunc("/secure/profile.html", auth.Wrapper(hand.HandlerProfile))
 
 	err := http.ListenAndServeTLS(":443", "Server.crt", "Server.key", nil)
 	if err != nil {
