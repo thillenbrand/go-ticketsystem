@@ -1,11 +1,11 @@
 function logout() {
     $.ajax({
         type: "GET",
-        url: "PUT_YOUR_PROTECTED_URL_HERE",
+        url: "URL",
         dataType: 'json',
         async: true,
-        username: "some_username_that_doesn't_exist",
-        password: "any_stupid_password",
+        username: "some_username_noone_has",
+        password: "any_password_not_used",
         data: '{ "comment" }'
     })
         .done(function(){

@@ -44,6 +44,7 @@ func checkUserValid(name, pswd string) bool {
 	for _, u := range users {
 		if u.Name == name && u.Pass == pswd {
 			//fmt.Println("user: ", name, ", password: ", pswd)
+			//fmt.Println("---")
 			//TODO: check mit Test ersetzen
 			return true
 			break
