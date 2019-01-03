@@ -141,7 +141,16 @@
                     <br>
                 </form>
                 <form action="#" method="POST">
-                    <div><input type="submit" value="Ticket anderem Bearbeiter zuweisen"
+                    <h4>Ticket anderem Bearbeiter zuweisen:</h4>
+                    <select name="ticketToAdd">
+                        <option value="default">Bearbeiter auswählen:</option>
+                        {{range $i, $user := .Users}}
+                            <option value="{{$user.ID}}">User {{$user.ID}}
+                                - {{$user.SName}}</option>
+                        {{end}}
+                    </select>
+                    <br><br>
+                    <div><input type="submit" value="Ticket zuweisen"
                                 class="btn btn-secondary btn-block"></div>
                     <br>
                 </form>

@@ -3,6 +3,7 @@ package frontend
 import (
 	"encoding/json"
 	"fmt"
+	"go-ticketsystem/pkg/authentication"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -41,6 +42,7 @@ type TicketsDet struct {
 	IDEditor int     `json:"IDEditor"`
 	Entry    []Entry `json:"Entry"`
 	Tickets  []Ticket
+	Users    authentication.Users
 }
 
 func openTickets() []Ticket {
@@ -72,10 +74,12 @@ func openTickets() []Ticket {
 }
 
 func HandlerDashboard(w http.ResponseWriter, r *http.Request) {
+
 	var tickets = openTickets()
 	var yourTicket []Ticket
 	for i := 0; i < len(tickets); i++ {
-		if tickets[i].IDEditor == 1234 {
+		if tickets[i].IDEditor == authentication.LoggedUserID {
+
 			yourTicket = append(yourTicket, tickets[i])
 		}
 	}
@@ -147,6 +151,8 @@ func HandlerClosedTickets(w http.ResponseWriter, r *http.Request) {
 
 func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 	var tickets = openTickets()
+	users := authentication.OpenUsers()
+	fmt.Println(users)
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
@@ -161,7 +167,7 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
-	p := TicketsDet{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry, Tickets: tickets}
+	p := TicketsDet{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry, Tickets: tickets, Users: users}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/ticketDetail.html")
 
 	err = t.Execute(w, p)
@@ -288,8 +294,7 @@ func HandlerTake(w http.ResponseWriter, r *http.Request) {
 		if tickets[i].ID == id {
 			tickets[i].Status = "in Bearbeitung"
 			tickets[i].Assigned = true
-			//ToDo: User ID auslesen
-			tickets[i].IDEditor = 1234
+			tickets[i].IDEditor = authentication.LoggedUserID
 			ticketDet = tickets[i]
 			break
 		}
@@ -300,6 +305,11 @@ func HandlerTake(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+}
+
+func HandlerAssign(w http.ResponseWriter, r *http.Request) {
+	users := authentication.OpenUsers()
+	fmt.Println(users)
 }
 
 func HandlerAdd(w http.ResponseWriter, r *http.Request) {
