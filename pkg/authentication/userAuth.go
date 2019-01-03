@@ -20,6 +20,10 @@ type Users struct {
 	User []User `json:"Users"`
 }
 
+var LoggedUserName string
+var LoggedUserID int
+var LoggedUserVac bool
+
 func openUsers() Users {
 	file, err := ioutil.ReadFile("./pkg/users/users.json")
 	if err != nil {
@@ -43,13 +47,23 @@ func checkUserValid(name, pswd string) bool {
 
 	for _, u := range users {
 		if u.Name == name && u.Pass == pswd {
+			//fmt.Println("user: ", name, "| password: ", pswd)
+			//fmt.Println("---")
+			//TODO: check mit Test ersetzen
+			LoggedUserID = u.ID
+			LoggedUserName = u.Name
+			LoggedUserVac = u.Vacation
+			//fmt.Println("user: ", LoggedUserName, "| ID: ", LoggedUserID, "| Vacation: ", LoggedUserVac)
+			//fmt.Println("---")
+			//TODO: check mit Test ersetzen
 			return true
 			break
 		}
 	}
+	LoggedUserID = 0
+	LoggedUserName = ""
+	LoggedUserVac = false
 	return false
-
-	// TODO: check mit Test ersetzen: fmt.Println("user: ", user, ", password: ", pswd)
 }
 
 func Wrapper(handler http.HandlerFunc) http.HandlerFunc {
