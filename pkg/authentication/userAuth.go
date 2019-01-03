@@ -60,6 +60,9 @@ func checkUserValid(name, pswd string) bool {
 			break
 		}
 	}
+	LoggedUserID = 0
+	LoggedUserName = ""
+	LoggedUserVac = false
 	return false
 }
 
