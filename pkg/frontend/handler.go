@@ -84,7 +84,6 @@ func openTickets() []Ticket {
 }
 
 func HandlerDashboard(w http.ResponseWriter, r *http.Request) {
-
 	var tickets = openTickets()
 	var yourTicket []Ticket
 	for i := 0; i < len(tickets); i++ {
@@ -239,6 +238,7 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 	var ticketDet Ticket
 	var id int
 	var err error
+	//wenn subject leer ist, wird ein neuer Kommentar erstellt, ansonsten ein neues Ticket
 	if subject == "" {
 		q := r.URL.String()
 		q = strings.Split(q, "?")[1]
@@ -386,6 +386,7 @@ func HandlerAdd(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
+	//Tickets dürfen nur zusammengefügt werden, wenn sie den gleichen Bearbeiter haben
 	if ticketToAdd.IDEditor == ticketDet.IDEditor {
 		for i := 0; i < len(ticketToAdd.Entry); i++ {
 			ticketDet.Entry = append(ticketDet.Entry, ticketToAdd.Entry[i])
