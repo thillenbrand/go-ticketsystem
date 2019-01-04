@@ -87,31 +87,28 @@
             <h3>Profile</h3>
 
             Urlaub:
-            <form action="/secure/saveP/profile" method="POST">
+            <form action="/secure/saveP/profile.html" method="POST">
                 <label class="switch">
-                    <input type="checkbox" name="vac">
-                    <span class="slider round"></span>
+                    <input type="checkbox" name="vac" {{.Value}}>
+                    <span class="slider"></span>
                 </label>
                 <br>
-                <form>
                     <div class="form-group">
                         <div class="form-label-group">
-                            <input type="text" id="inputID" class="form-control" placeholder="Editor ID"
-                                   required="required" autofocus="autofocus">
+                            <input type="text" name="inputID" class="form-control" placeholder="Editor ID" autofocus="autofocus" readonly>
                             <label for="inputID">{{.ID}}</label>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="form-label-group">
-                            <input type="text" id="inputName" class="form-control" placeholder="Name"
-                                   required="required" autofocus="autofocus">
+                            <input type="text" name="inputName" class="form-control" placeholder="Name" autofocus="autofocus" readonly>
                             <label for="inputName">{{.Name}}</label>
                         </div>
                     </div>
-                </form>
                 <br>
                 <hr>
-                <div><input type="submit" value="Speichern" class="btn btn-primary btn-block"></div><br>
+                <div><input type="submit" value="Speichern" class="btn btn-primary btn-block"></div>
+                <br>
                 <a class="btn btn-secondary btn-block" href="profile.html">Abbruch</a>
             </form>
         </div>

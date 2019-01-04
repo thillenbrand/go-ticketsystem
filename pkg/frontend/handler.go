@@ -47,6 +47,14 @@ type TicketsDet struct {
 
 type User = authentication.User
 
+type Profile struct {
+	ID       int
+	Name     string
+	Pass     string
+	Vacation bool
+	Value    string
+}
+
 func openTickets() []Ticket {
 	files, err := ioutil.ReadDir("./pkg/tickets/")
 	var tickets []Ticket
@@ -397,9 +405,12 @@ func HandlerAdd(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerProfile(w http.ResponseWriter, r *http.Request) {
-	vac := r.FormValue("vac")
-	fmt.Println(vac)
-	user := authentication.User{ID: authentication.LoggedUserID, Name: authentication.LoggedUserName, Pass: "", Vacation: authentication.LoggedUserVac}
+	vac := authentication.LoggedUserVac
+	var value string
+	if vac == true {
+		value = "checked"
+	}
+	user := Profile{ID: authentication.LoggedUserID, Name: authentication.LoggedUserName, Pass: "", Vacation: authentication.LoggedUserVac, Value: value}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/profile.html")
 	err := t.Execute(w, user)
 	if err != nil {
@@ -410,6 +421,12 @@ func HandlerProfile(w http.ResponseWriter, r *http.Request) {
 func HandlerSaveProfile(w http.ResponseWriter, r *http.Request) {
 	vac := r.FormValue("vac")
 	fmt.Println(vac)
+	if vac == "" {
+		authentication.LoggedUserVac = false
+	} else {
+		authentication.LoggedUserVac = true
+	}
+	saveProfile()
 	http.Redirect(w, r, "/secure/profile.html", http.StatusFound)
 }
 
@@ -420,4 +437,19 @@ func (t *Ticket) save() error {
 		fmt.Println(err)
 	}
 	return ioutil.WriteFile(filename, ticket, 0600)
+}
+
+func saveProfile() error {
+	users := authentication.OpenUsers()
+	for i := 0; i < len(users.User); i++ {
+		if users.User[i].ID == authentication.LoggedUserID {
+			users.User[i].Vacation = authentication.LoggedUserVac
+		}
+	}
+	filename := "./pkg/users/users.json"
+	user, err := json.Marshal(users)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return ioutil.WriteFile(filename, user, 0600)
 }
