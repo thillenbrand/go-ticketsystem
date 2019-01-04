@@ -3,6 +3,7 @@ package frontend
 import (
 	"encoding/json"
 	"fmt"
+	"go-ticketsystem/pkg/authentication"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -41,6 +42,17 @@ type TicketsDet struct {
 	IDEditor int     `json:"IDEditor"`
 	Entry    []Entry `json:"Entry"`
 	Tickets  []Ticket
+	Users    []authentication.User
+}
+
+type User = authentication.User
+
+type Profile struct {
+	ID       int
+	Name     string
+	Pass     string
+	Vacation bool
+	Value    string
 }
 
 func openTickets() []Ticket {
@@ -72,10 +84,12 @@ func openTickets() []Ticket {
 }
 
 func HandlerDashboard(w http.ResponseWriter, r *http.Request) {
+
 	var tickets = openTickets()
 	var yourTicket []Ticket
 	for i := 0; i < len(tickets); i++ {
-		if tickets[i].IDEditor == 1234 {
+		if tickets[i].IDEditor == authentication.LoggedUserID {
+
 			yourTicket = append(yourTicket, tickets[i])
 		}
 	}
@@ -147,6 +161,13 @@ func HandlerClosedTickets(w http.ResponseWriter, r *http.Request) {
 
 func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 	var tickets = openTickets()
+	var users = authentication.OpenUsers()
+	var user []authentication.User
+	for i := 0; i < len(users.User); i++ {
+		if users.User[i].ID == authentication.LoggedUserID {
+			user = append(users.User[:i], users.User[i+1:]...)
+		}
+	}
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
@@ -161,7 +182,7 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
-	p := TicketsDet{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry, Tickets: tickets}
+	p := TicketsDet{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry, Tickets: tickets, Users: user}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/ticketDetail.html")
 
 	err = t.Execute(w, p)
@@ -288,8 +309,7 @@ func HandlerTake(w http.ResponseWriter, r *http.Request) {
 		if tickets[i].ID == id {
 			tickets[i].Status = "in Bearbeitung"
 			tickets[i].Assigned = true
-			//ToDo: User ID auslesen
-			tickets[i].IDEditor = 1234
+			tickets[i].IDEditor = authentication.LoggedUserID
 			ticketDet = tickets[i]
 			break
 		}
@@ -300,6 +320,37 @@ func HandlerTake(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+}
+
+func HandlerAssign(w http.ResponseWriter, r *http.Request) {
+	var tickets = openTickets()
+	q := r.URL.String()
+	q = strings.Split(q, "?")[1]
+	id, err := strconv.Atoi(q)
+	if err != nil {
+		fmt.Println(err)
+	}
+	idUser, err := strconv.Atoi(r.FormValue("userAssign"))
+	if err != nil {
+		fmt.Println(err)
+	}
+	var ticketDet Ticket
+	for i := 0; i < len(tickets); i++ {
+		if tickets[i].ID == id {
+			tickets[i].IDEditor = idUser
+			ticketDet = tickets[i]
+			break
+		}
+	}
+
+	ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+	err = ticket.save()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+
 }
 
 func HandlerAdd(w http.ResponseWriter, r *http.Request) {
@@ -353,6 +404,32 @@ func HandlerAdd(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func HandlerProfile(w http.ResponseWriter, r *http.Request) {
+	vac := authentication.LoggedUserVac
+	var value string
+	if vac == true {
+		value = "checked"
+	}
+	user := Profile{ID: authentication.LoggedUserID, Name: authentication.LoggedUserName, Pass: "", Vacation: authentication.LoggedUserVac, Value: value}
+	t, _ := template.ParseFiles("./pkg/frontend/secure/profile.html")
+	err := t.Execute(w, user)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func HandlerSaveProfile(w http.ResponseWriter, r *http.Request) {
+	vac := r.FormValue("vac")
+	fmt.Println(vac)
+	if vac == "" {
+		authentication.LoggedUserVac = false
+	} else {
+		authentication.LoggedUserVac = true
+	}
+	saveProfile()
+	http.Redirect(w, r, "/secure/profile.html", http.StatusFound)
+}
+
 func (t *Ticket) save() error {
 	filename := "./pkg/tickets/ticket" + strconv.Itoa(t.ID) + ".json"
 	ticket, err := json.Marshal(t)
@@ -360,4 +437,19 @@ func (t *Ticket) save() error {
 		fmt.Println(err)
 	}
 	return ioutil.WriteFile(filename, ticket, 0600)
+}
+
+func saveProfile() error {
+	users := authentication.OpenUsers()
+	for i := 0; i < len(users.User); i++ {
+		if users.User[i].ID == authentication.LoggedUserID {
+			users.User[i].Vacation = authentication.LoggedUserVac
+		}
+	}
+	filename := "./pkg/users/users.json"
+	user, err := json.Marshal(users)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return ioutil.WriteFile(filename, user, 0600)
 }

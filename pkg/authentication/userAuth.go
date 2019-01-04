@@ -24,7 +24,7 @@ var LoggedUserName string
 var LoggedUserID int
 var LoggedUserVac bool
 
-func openUsers() Users {
+func OpenUsers() Users {
 	file, err := ioutil.ReadFile("./pkg/users/users.json")
 	if err != nil {
 		fmt.Println(err)
@@ -43,7 +43,7 @@ func openUsers() Users {
 }
 
 func checkUserValid(name, pswd string) bool {
-	var users = openUsers().User
+	var users = OpenUsers().User
 
 	for _, u := range users {
 		if u.Name == name && u.Pass == pswd {
