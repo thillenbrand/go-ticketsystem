@@ -128,13 +128,14 @@ func HandlerOpenTickets(w http.ResponseWriter, r *http.Request) {
 
 func HandlerProTickets(w http.ResponseWriter, r *http.Request) {
 	var tickets = OpenTickets()
-	var proTicket []Ticket
+	var yourTicket []Ticket
 	for i := 0; i < len(tickets); i++ {
-		if tickets[i].Status == "in Bearbeitung" {
-			proTicket = append(proTicket, tickets[i])
+		if tickets[i].IDEditor == authentication.LoggedUserID {
+
+			yourTicket = append(yourTicket, tickets[i])
 		}
 	}
-	p := Tickets{proTicket}
+	p := Tickets{yourTicket}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/ticketsProcessing.html")
 	err := t.Execute(w, p)
 	if err != nil {
