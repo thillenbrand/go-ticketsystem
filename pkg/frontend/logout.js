@@ -1,18 +1,26 @@
 function logout() {
-    $.ajax({
-        type: "GET",
-        url: "URL",
-        dataType: 'json',
-        async: true,
-        username: "enter your username here",
-        password: "any_password_not_used",
-        data: '{ "comment" }'
-    })
-        .done(function(){
-            alert('Der genutzte Browser ist zu alt oder zu speziell und unterstützt den Logout nicht. Bitte schließen sie ihren Browser oder löschen sie ihren Authentifizierungs-Cache.')
-        })
-        .fail(function(){
-            alert('Logout abgeschlossen.');
-            window.location = "/";
+    try {
+        // for Firefox
+        $.ajax({
+            url: "/secure/dashboard.html",
+            username: 'please enter your username here',
+            password: 'any_password_not_used',
+
+            statusCode: {
+                401: function () {
+                    document.location = "/";
+                }
+            }
+
         });
+
+    } catch (exception) {
+        // for IE
+        if (!document.execCommand("ClearAuthenticationCache")) {
+            //for Chrome
+            document.location = "https://reset:reset@" + document.location.hostname + document.location.pathname;
+        }
+    }
+
+    document.location = "/";
 }
