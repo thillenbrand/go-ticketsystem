@@ -163,9 +163,16 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 	var tickets = openTickets()
 	var users = authentication.OpenUsers()
 	var user []authentication.User
+	//Angemeldeter User wird aus Dropdown entfernt
 	for i := 0; i < len(users.User); i++ {
 		if users.User[i].ID == authentication.LoggedUserID {
 			user = append(users.User[:i], users.User[i+1:]...)
+		}
+	}
+	//User im Urlaub werden aus Dropdown entfernt
+	for i := 0; i < len(user); i++ {
+		if user[i].Vacation == true {
+			user = append(user[:i], user[i+1:]...)
 		}
 	}
 	q := r.URL.String()
