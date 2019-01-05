@@ -165,7 +165,7 @@ func HandlerClosedTickets(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
-	var tickets = openTickets()
+	//Verfügbare User für Ticketzuweisung
 	var users = authentication.OpenUsers()
 	var user []authentication.User
 	//Angemeldeter User wird aus Dropdown entfernt
@@ -186,15 +186,17 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
+	var tickets = openTickets()
+	var ticketsOther []Ticket
 	var ticketDet Ticket
 	for i := 0; i < len(tickets); i++ {
 		if tickets[i].ID == id {
 			ticketDet = tickets[i]
-			tickets = append(tickets[:i], tickets[i+1:]...)
+			ticketsOther = append(tickets[:i], tickets[i+1:]...)
 			break
 		}
 	}
-	p := TicketsDet{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry, Tickets: tickets, Users: user}
+	p := TicketsDet{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry, Tickets: ticketsOther, Users: user}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/ticketDetail.html")
 
 	err = t.Execute(w, p)
@@ -205,7 +207,6 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 
 func HandlerEntry(w http.ResponseWriter, r *http.Request) {
 	var tickets = ticketTest
-
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
@@ -244,7 +245,7 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 		author = authentication.LoggedUserName
 	}
 	newEntry := Entry{date, author, text, visible}
-	tickets := openTickets()
+	tickets := ticketTest
 	var ticketDet Ticket
 	var id int
 	var err error
@@ -268,7 +269,7 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
-
+		updateTickets()
 		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 	} else {
 		ticketDet.ID = tickets[len(tickets)-1].ID + 1
@@ -282,12 +283,13 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
+		updateTickets()
 		http.Redirect(w, r, "/index.html", http.StatusFound)
 	}
 }
 
 func HandlerRelease(w http.ResponseWriter, r *http.Request) {
-	var tickets = openTickets()
+	var tickets = ticketTest
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
@@ -309,11 +311,12 @@ func HandlerRelease(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
+	updateTickets()
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 }
 
 func HandlerTake(w http.ResponseWriter, r *http.Request) {
-	var tickets = openTickets()
+	var tickets = ticketTest
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
@@ -335,11 +338,12 @@ func HandlerTake(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
+	updateTickets()
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 }
 
 func HandlerAssign(w http.ResponseWriter, r *http.Request) {
-	var tickets = openTickets()
+	var tickets = ticketTest
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
@@ -364,13 +368,13 @@ func HandlerAssign(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
+	updateTickets()
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 
 }
 
 func HandlerAdd(w http.ResponseWriter, r *http.Request) {
-	var tickets = openTickets()
+	var tickets = ticketTest
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
@@ -414,11 +418,13 @@ func HandlerAdd(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
+		updateTickets()
 		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 	} else {
 		alert := "<script>alert('Zusammenführung fehlgeschlagen. Die Tickets haben nicht denselben Bearbeiter.');window.location = '/secure/ticketDetail.html?" + strconv.Itoa(ticketDet.ID) + "';</script>"
 		fmt.Fprintf(w, alert)
 	}
+
 }
 
 func HandlerProfile(w http.ResponseWriter, r *http.Request) {
@@ -454,6 +460,10 @@ func (t *Ticket) save() error {
 		fmt.Println(err)
 	}
 	return ioutil.WriteFile(filename, ticket, 0600)
+}
+
+func updateTickets() {
+	ticketTest = openTickets()
 }
 
 func saveProfile() error {
