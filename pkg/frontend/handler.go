@@ -186,13 +186,16 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	var tickets = openTickets()
-	var ticketsOther []Ticket
+
+	var tickets = ticketTest
 	var ticketDet Ticket
+	var ticketsOther []Ticket
+
 	for i := 0; i < len(tickets); i++ {
 		if tickets[i].ID == id {
 			ticketDet = tickets[i]
-			ticketsOther = append(tickets[:i], tickets[i+1:]...)
+			ticketsOther = append(ticketsOther, tickets[i+1:]...)
+			ticketsOther = append(ticketsOther, tickets[i+1:]...)
 			break
 		}
 	}
@@ -312,6 +315,7 @@ func HandlerRelease(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	updateTickets()
+
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 }
 
