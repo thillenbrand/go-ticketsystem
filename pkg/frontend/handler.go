@@ -55,7 +55,13 @@ type Profile struct {
 	Value    string
 }
 
-func OpenTickets() []Ticket {
+var ticketTest []Ticket
+
+func FillTicket() {
+	ticketTest = openTickets()
+}
+
+func openTickets() []Ticket {
 	files, err := ioutil.ReadDir("./pkg/tickets/")
 	var tickets []Ticket
 	if err != nil {
@@ -84,11 +90,10 @@ func OpenTickets() []Ticket {
 }
 
 func HandlerDashboard(w http.ResponseWriter, r *http.Request) {
-	var tickets = OpenTickets()
+	var tickets = ticketTest
 	var yourTicket []Ticket
 	for i := 0; i < len(tickets); i++ {
 		if tickets[i].IDEditor == authentication.LoggedUserID {
-
 			yourTicket = append(yourTicket, tickets[i])
 		}
 	}
@@ -101,7 +106,7 @@ func HandlerDashboard(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerTickets(w http.ResponseWriter, r *http.Request) {
-	var tickets = OpenTickets()
+	var tickets = ticketTest
 	p := Tickets{tickets}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/tickets.html")
 	err := t.Execute(w, p)
@@ -111,7 +116,7 @@ func HandlerTickets(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerOpenTickets(w http.ResponseWriter, r *http.Request) {
-	var tickets = OpenTickets()
+	var tickets = ticketTest
 	var openTicket []Ticket
 	for i := 0; i < len(tickets); i++ {
 		if tickets[i].Status == "offen" {
@@ -127,7 +132,7 @@ func HandlerOpenTickets(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerProTickets(w http.ResponseWriter, r *http.Request) {
-	var tickets = OpenTickets()
+	var tickets = ticketTest
 	var yourTicket []Ticket
 	for i := 0; i < len(tickets); i++ {
 		if tickets[i].IDEditor == authentication.LoggedUserID {
@@ -144,7 +149,7 @@ func HandlerProTickets(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerClosedTickets(w http.ResponseWriter, r *http.Request) {
-	var tickets = OpenTickets()
+	var tickets = ticketTest
 	var closedTicket []Ticket
 	for i := 0; i < len(tickets); i++ {
 		if tickets[i].Status == "geschlossen" {
@@ -160,7 +165,7 @@ func HandlerClosedTickets(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
-	var tickets = OpenTickets()
+	var tickets = openTickets()
 	var users = authentication.OpenUsers()
 	var user []authentication.User
 	//Angemeldeter User wird aus Dropdown entfernt
@@ -199,7 +204,7 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerEntry(w http.ResponseWriter, r *http.Request) {
-	var tickets = OpenTickets()
+	var tickets = ticketTest
 
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
@@ -234,8 +239,12 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 	} else {
 		visible = false
 	}
+	//Bei Kommentaren wird der Name des eingeloggten Users verwendet
+	if author == "" {
+		author = authentication.LoggedUserName
+	}
 	newEntry := Entry{date, author, text, visible}
-	tickets := OpenTickets()
+	tickets := openTickets()
 	var ticketDet Ticket
 	var id int
 	var err error
@@ -247,7 +256,6 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
-
 		for i := 0; i < len(tickets); i++ {
 			if tickets[i].ID == id {
 				ticketDet = tickets[i]
@@ -279,7 +287,7 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerRelease(w http.ResponseWriter, r *http.Request) {
-	var tickets = OpenTickets()
+	var tickets = openTickets()
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
@@ -305,7 +313,7 @@ func HandlerRelease(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerTake(w http.ResponseWriter, r *http.Request) {
-	var tickets = OpenTickets()
+	var tickets = openTickets()
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
@@ -331,7 +339,7 @@ func HandlerTake(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerAssign(w http.ResponseWriter, r *http.Request) {
-	var tickets = OpenTickets()
+	var tickets = openTickets()
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
@@ -362,7 +370,7 @@ func HandlerAssign(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerAdd(w http.ResponseWriter, r *http.Request) {
-	var tickets = OpenTickets()
+	var tickets = openTickets()
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)

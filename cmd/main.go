@@ -20,6 +20,8 @@ func main() {
 		})
 	*/
 
+	hand.FillTicket()
+
 	http.HandleFunc("/", mainHandler)
 
 	http.HandleFunc("/secure/dashboard.html", auth.Wrapper(hand.HandlerDashboard))
