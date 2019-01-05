@@ -10,7 +10,7 @@ func TestOpenTickets(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	var tickets = OpenTickets()
+	var tickets = openTickets()
 	if len(tickets) == 0 {
 		t.Error()
 	}
