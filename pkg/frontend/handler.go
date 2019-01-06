@@ -64,11 +64,11 @@ type Profile struct {
 }
 
 //Globale Variable, die alle vorhandenen Tickets enthält
-var ticketsAll []Ticket
+var TicketsAll []Ticket
 
-//wird von main.go aufgerufen, um ticketsAll zu befüllen
+//wird von main.go aufgerufen, um TicketsAll zu befüllen
 func FillTicket() {
-	ticketsAll = openTickets()
+	TicketsAll = openTickets()
 }
 
 //Funktion sucht alle vorhandenen Tickets in ./pkg/tickets, öffnet diese und gibt sie als []Ticket zurück
@@ -105,9 +105,60 @@ func openTickets() []Ticket {
 	return tickets
 }
 
+//Funktion um ID des gewünschten Tickets aus der URL auszulesen
+func ticketID(r *http.Request) int {
+	q := r.URL.String()
+	q = strings.Split(q, "?")[1]
+	id, err := strconv.Atoi(q)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return id
+}
+
+//Funktion, um von anderen Klassen Tickets zu speichern
+func SaveExternal(t *Ticket) {
+	err := t.save()
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+//Funktion um Ticketänderungen/-erstellungen zu speichern
+func (t *Ticket) save() error {
+	filename := "./pkg/tickets/ticket" + strconv.Itoa(t.ID) + ".json"
+	ticket, err := json.Marshal(t)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return ioutil.WriteFile(filename, ticket, 0600)
+}
+
+//Funktion um globale Variable TicketsAll zu aktualisieren
+func UpdateTickets() {
+	TicketsAll = openTickets()
+}
+
+//Änderungen im Profil werden im .json gespeichert
+func saveProfile() error {
+	users := authentication.OpenUsers()
+	//eingeloggter User wird ausgewählt und Urlaubswert verändert
+	for i := 0; i < len(users.User); i++ {
+		if users.User[i].ID == authentication.LoggedUserID {
+			users.User[i].Vacation = authentication.LoggedUserVac
+		}
+	}
+	filename := "./pkg/users/users.json"
+	user, err := json.Marshal(users)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return ioutil.WriteFile(filename, user, 0600)
+}
+
 //auf dem Dashboard werden alle Tickets angezeigt, die den eingeloggten User als Bearbeiter haben
 func HandlerDashboard(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketsAll
+	var tickets = TicketsAll
 	var yourTicket []Ticket
 	//alle tickets werden nach der ID des Users und den Status "in Bearbeitung" durchsucht und gesammelt
 	for i := 0; i < len(tickets); i++ {
@@ -127,7 +178,7 @@ func HandlerDashboard(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerTickets(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketsAll
+	var tickets = TicketsAll
 	p := Tickets{tickets}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/tickets.html")
 	err := t.Execute(w, p)
@@ -138,7 +189,7 @@ func HandlerTickets(w http.ResponseWriter, r *http.Request) {
 
 //alle Tickets mit Status "offen" werden angezeigt
 func HandlerOpenTickets(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketsAll
+	var tickets = TicketsAll
 	var openTicket []Ticket
 	for i := 0; i < len(tickets); i++ {
 		if tickets[i].Status == "offen" {
@@ -155,7 +206,7 @@ func HandlerOpenTickets(w http.ResponseWriter, r *http.Request) {
 
 //dieselben Tickets wie im Dashboard-Handler werden ausgewählt und auf der Seite angezeigt
 func HandlerProTickets(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketsAll
+	var tickets = TicketsAll
 	var yourTicket []Ticket
 	for i := 0; i < len(tickets); i++ {
 		if tickets[i].IDEditor == authentication.LoggedUserID {
@@ -175,7 +226,7 @@ func HandlerProTickets(w http.ResponseWriter, r *http.Request) {
 //alle geschlossenen Tickets werden angezeigt
 //dabei sieht ein Bearbeiter auch die geschlossenen Tickets der anderen Bearbeiter
 func HandlerClosedTickets(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketsAll
+	var tickets = TicketsAll
 	var closedTicket []Ticket
 	for i := 0; i < len(tickets); i++ {
 		if tickets[i].Status == "geschlossen" {
@@ -188,17 +239,6 @@ func HandlerClosedTickets(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-}
-
-//Funktion um ID des gewünschten Tickets aus der URL auszulesen
-func ticketID(r *http.Request) int {
-	q := r.URL.String()
-	q = strings.Split(q, "?")[1]
-	id, err := strconv.Atoi(q)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return id
 }
 
 //Daten für Detailansicht eines Tickets
@@ -220,7 +260,7 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 	}
 	id := ticketID(r)
 	//alle verfügbaren Tickets
-	var tickets = ticketsAll
+	var tickets = TicketsAll
 	//Details des ausgewählten Tickets
 	var ticketDet Ticket
 	//alle Tickets außer ausgewähltes für Zusammenführungs-Dropdown
@@ -247,7 +287,7 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 //Seite zum hinzufügen eines neuen Eintrages
 //Die ID des ausgewählten Tickets wird benötigt, um wieder auf das richtige Ticket zurück kommen zu können
 func HandlerEntry(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketsAll
+	var tickets = TicketsAll
 	//ID des Tickets
 	id := ticketID(r)
 	var ticketDet Ticket
@@ -284,7 +324,7 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 		author = authentication.LoggedUserName
 	}
 	newEntry := Entry{date, author, text, visible}
-	tickets := ticketsAll
+	tickets := TicketsAll
 	var ticketDet Ticket
 	var id int
 	//wenn subject leer ist, wird ein neuer Kommentar erstellt, ansonsten ein neues Ticket
@@ -302,8 +342,8 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		//nach Speichern der Änderungen wird ticketsAll aktualisiert
-		updateTickets()
+		//nach Speichern der Änderungen wird TicketsAll aktualisiert
+		UpdateTickets()
 		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 	} else {
 		//neues Ticket wird erstellt
@@ -318,14 +358,14 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		updateTickets()
+		UpdateTickets()
 		http.Redirect(w, r, "/index.html", http.StatusFound)
 	}
 }
 
 //Handler zum Freigeben von Tickets
 func HandlerRelease(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketsAll
+	var tickets = TicketsAll
 	var id = ticketID(r)
 	var ticketDet Ticket
 	//ausgewähltes Ticket wird auf Status "offen" und unassigned gesetzt; der Bearbeiter wird gelöscht
@@ -343,14 +383,14 @@ func HandlerRelease(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	updateTickets()
+	UpdateTickets()
 
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 }
 
 //Handler zum Ticket übernehmen
 func HandlerTake(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketsAll
+	var tickets = TicketsAll
 	var id = ticketID(r)
 	var ticketDet Ticket
 	//ausgewähltes Ticket wird auf Status "in Bearbeitung" und assigned gesetzt; als Bearbeiter wird der eingeloggte User gesetzt
@@ -368,13 +408,13 @@ func HandlerTake(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	updateTickets()
+	UpdateTickets()
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 }
 
 //Handler um Tickets zuzuweisen
 func HandlerAssign(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketsAll
+	var tickets = TicketsAll
 	var id = ticketID(r)
 	//idUser ist die ID des im Dropdown-Feldes ausgewählten Users
 	idUser, err := strconv.Atoi(r.FormValue("userAssign"))
@@ -396,14 +436,14 @@ func HandlerAssign(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	updateTickets()
+	UpdateTickets()
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 
 }
 
 //Handler um Tickets zusammen zu führen
 func HandlerAdd(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketsAll
+	var tickets = TicketsAll
 	var id = ticketID(r)
 	//ID des Tickets, das an das aktuelle Ticket angehängt werden soll
 	idToAdd, err := strconv.Atoi(r.FormValue("ticketToAdd"))
@@ -447,7 +487,7 @@ func HandlerAdd(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		updateTickets()
+		UpdateTickets()
 		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 	} else {
 		alert := "<script>alert('Zusammenführung fehlgeschlagen. Die Tickets haben nicht denselben Bearbeiter.');window.location = '/secure/ticketDetail.html?" + strconv.Itoa(ticketDet.ID) + "';</script>"
@@ -461,7 +501,7 @@ func HandlerAdd(w http.ResponseWriter, r *http.Request) {
 
 //Handler um Tickets zu schließen
 func HandlerClose(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketsAll
+	var tickets = TicketsAll
 	var id = ticketID(r)
 	//ausgewähltes Ticket wird auf Status "geschlossen" und unassigned gesetzt
 	var ticketDet Ticket
@@ -478,7 +518,7 @@ func HandlerClose(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	updateTickets()
+	UpdateTickets()
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 }
 
@@ -512,36 +552,4 @@ func HandlerSaveProfile(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	http.Redirect(w, r, "/secure/profile.html", http.StatusFound)
-}
-
-//Funktion um Ticketänderungen/-erstellungen zu speichern
-func (t *Ticket) save() error {
-	filename := "./pkg/tickets/ticket" + strconv.Itoa(t.ID) + ".json"
-	ticket, err := json.Marshal(t)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return ioutil.WriteFile(filename, ticket, 0600)
-}
-
-//Funktion um globale Variable ticketsAll zu aktualisieren
-func updateTickets() {
-	ticketsAll = openTickets()
-}
-
-//Änderungen im Profil werden im .json gespeichert
-func saveProfile() error {
-	users := authentication.OpenUsers()
-	//eingeloggter User wird ausgewählt und Urlaubswert verändert
-	for i := 0; i < len(users.User); i++ {
-		if users.User[i].ID == authentication.LoggedUserID {
-			users.User[i].Vacation = authentication.LoggedUserVac
-		}
-	}
-	filename := "./pkg/users/users.json"
-	user, err := json.Marshal(users)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return ioutil.WriteFile(filename, user, 0600)
 }
