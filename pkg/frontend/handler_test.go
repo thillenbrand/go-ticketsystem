@@ -1,19 +1,29 @@
 package frontend
 
 import (
+	"net/http/httptest"
 	"os"
 	"testing"
 )
 
-func TestFillTicket(t *testing.T) {
-
-}
-
-func TestOpenTickets(t *testing.T) {
+func init() {
 	err := os.Chdir("../../")
 	if err != nil {
 		panic(err)
 	}
+}
+
+func TestFillTicket(t *testing.T) {
+	if len(TicketsAll) != 0 {
+		TicketsAll = TicketsAll[:0]
+	}
+	FillTicket()
+	if len(TicketsAll) == 0 {
+		t.Error()
+	}
+}
+
+func TestOpenTickets(t *testing.T) {
 	var tickets = openTickets()
 	if len(tickets) == 0 {
 		t.Error("Ausgelesene Tickets sind leer")
@@ -21,7 +31,10 @@ func TestOpenTickets(t *testing.T) {
 }
 
 func TestTicketID(t *testing.T) {
-
+	request := httptest.NewRequest("", "/ticket1?1", nil)
+	if ticketID(request) != 1 {
+		t.Error()
+	}
 }
 
 func TestSaveExternal(t *testing.T) {
