@@ -33,6 +33,7 @@ func main() {
 	http.HandleFunc("/secure/entry.html", auth.Wrapper(hand.HandlerEntry))
 	http.HandleFunc("/secure/saveP/", auth.Wrapper(hand.HandlerSaveProfile))
 	http.HandleFunc("/secure/save/", auth.Wrapper(hand.HandlerSave))
+	http.HandleFunc("/secure/close/", auth.Wrapper(hand.HandlerClose))
 	http.HandleFunc("/secure/release/", auth.Wrapper(hand.HandlerRelease))
 	http.HandleFunc("/secure/take/", auth.Wrapper(hand.HandlerTake))
 	http.HandleFunc("/secure/add/", auth.Wrapper(hand.HandlerAdd))
