@@ -2,7 +2,7 @@
   "ID": 7,
   "Subject": "Problem",
   "Status": "geschlossen",
-  "Assigned": true,
+  "Assigned": false,
   "IDEditor": 2,
   "Entry": [
     {

@@ -1,3 +1,5 @@
+//2057008, 2624395, 9111696
+
 package frontend
 
 import (
@@ -14,6 +16,7 @@ import (
 	"time"
 )
 
+//Struktur eines Kommentars
 type Entry struct {
 	Date    string `json:"Date"`
 	Author  string `json:"Author"`
@@ -21,6 +24,7 @@ type Entry struct {
 	Visible bool
 }
 
+//Struktur eines Tickets
 type Ticket struct {
 	ID       int     `json:"ID"`
 	Subject  string  `json:"Subject"`
@@ -34,6 +38,7 @@ type Tickets struct {
 	Tickets []Ticket
 }
 
+//Struktur für die Seite TicketDetail, bei der alle Daten eines Tickets und die Auswahl aller anderen Tickets und User angezeigt wird
 type TicketsDet struct {
 	ID       int     `json:"ID"`
 	Subject  string  `json:"Subject"`
@@ -45,8 +50,11 @@ type TicketsDet struct {
 	Users    []authentication.User
 }
 
+//Struktur des Users kommt von userAuth.go
 type User = authentication.User
 
+//Struktur der Profildaten eines angemeldeten Users
+//Value wird für das Laden der Profilseiten benötigt, damit der Slider für Vacation richtig angezeigt wird
 type Profile struct {
 	ID       int
 	Name     string
@@ -55,25 +63,33 @@ type Profile struct {
 	Value    string
 }
 
-var ticketTest []Ticket
+//Globale Variable, die alle vorhandenen Tickets enthält
+var ticketsAll []Ticket
 
+//wird von main.go aufgerufen, um ticketsAll zu befüllen
 func FillTicket() {
-	ticketTest = openTickets()
+	ticketsAll = openTickets()
 }
 
+//Funktion sucht alle vorhandenen Tickets in ./pkg/tickets, öffnet diese und gibt sie als []Ticket zurück
 func openTickets() []Ticket {
+	//Pfad von main.go, um zu den gespeicherten Tickets zu gelangen
 	files, err := ioutil.ReadDir("./pkg/tickets/")
-	var tickets []Ticket
 	if err != nil {
 		log.Fatal(err)
 	}
+	//in tickets werden alle Tickets gespeichert, Variable wird am Ende zurück gegeben
+	var tickets []Ticket
+	//File sind alle gefundenen Tickets
 	for _, file := range files {
 		i := 0
+		//in temporary wird das jeweils geöffnete Ticket gespeichert und später an tickets angehängt
 		var temporary Ticket
 		jsonFile, errorJ := os.Open("./pkg/tickets/" + file.Name())
 		if errorJ != nil {
 			fmt.Println(errorJ)
 		}
+		//Die .json-Dateinen müssen geöffnet werden und Unmarshalling wird ausgeführt
 		value, _ := ioutil.ReadAll(jsonFile)
 		err := json.Unmarshal(value, &temporary)
 		if err != nil {
@@ -89,14 +105,19 @@ func openTickets() []Ticket {
 	return tickets
 }
 
+//auf dem Dashboard werden alle Tickets angezeigt, die den eingeloggten User als Bearbeiter haben
 func HandlerDashboard(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketTest
+	var tickets = ticketsAll
 	var yourTicket []Ticket
+	//alle tickets werden nach der ID des Users und den Status "in Bearbeitung" durchsucht und gesammelt
 	for i := 0; i < len(tickets); i++ {
 		if tickets[i].IDEditor == authentication.LoggedUserID {
-			yourTicket = append(yourTicket, tickets[i])
+			if tickets[i].Status == "in Bearbeitung" {
+				yourTicket = append(yourTicket, tickets[i])
+			}
 		}
 	}
+	//dashboard.html wird mit den gefundenen tickets geladen
 	p := Tickets{yourTicket}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/dashboard.html")
 	err := t.Execute(w, p)
@@ -106,7 +127,7 @@ func HandlerDashboard(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerTickets(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketTest
+	var tickets = ticketsAll
 	p := Tickets{tickets}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/tickets.html")
 	err := t.Execute(w, p)
@@ -115,8 +136,9 @@ func HandlerTickets(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//alle Tickets mit Status "offen" werden angezeigt
 func HandlerOpenTickets(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketTest
+	var tickets = ticketsAll
 	var openTicket []Ticket
 	for i := 0; i < len(tickets); i++ {
 		if tickets[i].Status == "offen" {
@@ -131,13 +153,15 @@ func HandlerOpenTickets(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//dieselben Tickets wie im Dashboard-Handler werden ausgewählt und auf der Seite angezeigt
 func HandlerProTickets(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketTest
+	var tickets = ticketsAll
 	var yourTicket []Ticket
 	for i := 0; i < len(tickets); i++ {
 		if tickets[i].IDEditor == authentication.LoggedUserID {
-
-			yourTicket = append(yourTicket, tickets[i])
+			if tickets[i].Status == "in Bearbeitung" {
+				yourTicket = append(yourTicket, tickets[i])
+			}
 		}
 	}
 	p := Tickets{yourTicket}
@@ -148,8 +172,10 @@ func HandlerProTickets(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//alle geschlossenen Tickets werden angezeigt
+//dabei sieht ein Bearbeiter auch die geschlossenen Tickets der anderen Bearbeiter
 func HandlerClosedTickets(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketTest
+	var tickets = ticketsAll
 	var closedTicket []Ticket
 	for i := 0; i < len(tickets); i++ {
 		if tickets[i].Status == "geschlossen" {
@@ -164,6 +190,7 @@ func HandlerClosedTickets(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//Daten für Detailansicht eines Tickets
 func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 	//Verfügbare User für Ticketzuweisung
 	var users = authentication.OpenUsers()
@@ -180,17 +207,20 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 			user = append(user[:i], user[i+1:]...)
 		}
 	}
+	//gewünschtes Ticket wird aus der URL gelesen
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	var tickets = ticketTest
+	//alle verfügbaren Tickets
+	var tickets = ticketsAll
+	//Details des ausgewählten Tickets
 	var ticketDet Ticket
+	//alle Tickets außer ausgewähltes für Zusammenführungs-Dropdown
 	var ticketsOther []Ticket
-
+	//ausgewähltes Ticket wird befüllt und alle anderen Tickets werden an ticketsOther angehängt
 	for i := 0; i < len(tickets); i++ {
 		if tickets[i].ID == id {
 			ticketDet = tickets[i]
@@ -199,6 +229,7 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
+	//Seite wird nach dem Struct TicketsDet geladen
 	p := TicketsDet{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry, Tickets: ticketsOther, Users: user}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/ticketDetail.html")
 
@@ -209,7 +240,7 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerEntry(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketTest
+	var tickets = ticketsAll
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
@@ -248,7 +279,7 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 		author = authentication.LoggedUserName
 	}
 	newEntry := Entry{date, author, text, visible}
-	tickets := ticketTest
+	tickets := ticketsAll
 	var ticketDet Ticket
 	var id int
 	var err error
@@ -292,7 +323,7 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerRelease(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketTest
+	var tickets = ticketsAll
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
@@ -320,7 +351,7 @@ func HandlerRelease(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerTake(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketTest
+	var tickets = ticketsAll
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
@@ -347,7 +378,7 @@ func HandlerTake(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerAssign(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketTest
+	var tickets = ticketsAll
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
@@ -378,7 +409,7 @@ func HandlerAssign(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandlerAdd(w http.ResponseWriter, r *http.Request) {
-	var tickets = ticketTest
+	var tickets = ticketsAll
 	q := r.URL.String()
 	q = strings.Split(q, "?")[1]
 	id, err := strconv.Atoi(q)
@@ -431,6 +462,32 @@ func HandlerAdd(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func HandlerClose(w http.ResponseWriter, r *http.Request) {
+	var tickets = ticketsAll
+	q := r.URL.String()
+	q = strings.Split(q, "?")[1]
+	id, err := strconv.Atoi(q)
+	if err != nil {
+		fmt.Println(err)
+	}
+	var ticketDet Ticket
+	for i := 0; i < len(tickets); i++ {
+		if tickets[i].ID == id {
+			tickets[i].Status = "geschlossen"
+			tickets[i].Assigned = false
+			ticketDet = tickets[i]
+			break
+		}
+	}
+	ticket := &Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
+	err = ticket.save()
+	if err != nil {
+		fmt.Println(err)
+	}
+	updateTickets()
+	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+}
+
 func HandlerProfile(w http.ResponseWriter, r *http.Request) {
 	vac := authentication.LoggedUserVac
 	var value string
@@ -467,7 +524,7 @@ func (t *Ticket) save() error {
 }
 
 func updateTickets() {
-	ticketTest = openTickets()
+	ticketsAll = openTickets()
 }
 
 func saveProfile() error {

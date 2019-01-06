@@ -12,6 +12,6 @@ func TestOpenTickets(t *testing.T) {
 	}
 	var tickets = openTickets()
 	if len(tickets) == 0 {
-		t.Error()
+		t.Error("Ausgelesene Tickets sind leer")
 	}
 }
