@@ -14,10 +14,10 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	/*
-		http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, r.URL.Path[1:])
-		})
+	/* TODO: Wird das hier noch benötigt?
+	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, r.URL.Path[1:])
+	})
 	*/
 
 	hand.FillTicket()
