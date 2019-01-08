@@ -66,11 +66,6 @@ type Profile struct {
 //Globale Variable, die alle vorhandenen Tickets enthält
 var TicketsAll []Ticket
 
-//wird von main.go aufgerufen, um TicketsAll zu befüllen
-func FillTicket() {
-	TicketsAll = openTickets()
-}
-
 //Funktion sucht alle vorhandenen Tickets in ./pkg/tickets, öffnet diese und gibt sie als []Ticket zurück
 func openTickets() []Ticket {
 	//Pfad von main.go, um zu den gespeicherten Tickets zu gelangen
@@ -134,7 +129,7 @@ func (t *Ticket) save() error {
 	return ioutil.WriteFile(filename, ticket, 0600)
 }
 
-//Funktion um globale Variable TicketsAll zu aktualisieren
+//Funktion um globale Variable TicketsAll zu aktualisieren; wird von main.go aufgerufen
 func UpdateTickets() {
 	TicketsAll = openTickets()
 }

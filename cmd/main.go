@@ -20,7 +20,7 @@ func main() {
 		})
 	*/
 
-	hand.FillTicket()
+	hand.UpdateTickets()
 
 	http.HandleFunc("/", mainHandler)
 
