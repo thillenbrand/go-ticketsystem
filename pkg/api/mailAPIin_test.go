@@ -21,14 +21,6 @@ func init() {
 	frontend.UpdateTickets()
 }
 
-func TestMail(t *testing.T) {
-
-}
-
-func TestGetMail(t *testing.T) {
-
-}
-
 func TestTicketExist(t *testing.T) {
 	mail := Mail{Address: "test@test.de", Subject: "KeinTest", Text: "Dies ist ein Test"}
 	if ticketExist(mail) != false {
