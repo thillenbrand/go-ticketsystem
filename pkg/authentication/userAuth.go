@@ -142,3 +142,7 @@ func checkPass(passHash string, passPlain string) bool {
 
 	return true
 }
+
+func HandlerRegister(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/index.html", http.StatusFound)
+}
