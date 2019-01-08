@@ -17,6 +17,7 @@ func GetMail(addr string, subj string, text string) {
 }
 
 func ticketExist(mail Mail) bool {
+	frontend.UpdateTickets()
 	for i := 0; i < len(frontend.TicketsAll); i++ {
 		if frontend.TicketsAll[i].Subject == mail.Subject {
 			if frontend.TicketsAll[i].Status == "geschlossen" {
