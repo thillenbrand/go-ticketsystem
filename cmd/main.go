@@ -14,11 +14,6 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	/* TODO: Wird das hier noch benötigt?
-	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, r.URL.Path[1:])
-	})
-	*/
 
 	hand.UpdateTickets()
 
