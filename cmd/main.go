@@ -39,6 +39,7 @@ func main() {
 	http.HandleFunc("/secure/add/", auth.Wrapper(hand.HandlerAdd))
 	http.HandleFunc("/secure/assign/", auth.Wrapper(hand.HandlerAssign))
 	http.HandleFunc("/secure/profile.html", auth.Wrapper(hand.HandlerProfile))
+	http.HandleFunc("/register/", auth.Wrapper(auth.HandlerRegister))
 
 	err := http.ListenAndServeTLS(":443", "Server.crt", "Server.key", nil)
 	if err != nil {
