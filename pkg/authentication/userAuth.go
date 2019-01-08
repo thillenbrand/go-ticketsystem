@@ -82,5 +82,5 @@ func Wrapper(handler http.HandlerFunc) http.HandlerFunc {
 }
 
 func HandlerRegister(w http.ResponseWriter, r *http.Request) {
-
+	http.Redirect(w, r, "/index.html", http.StatusFound)
 }
