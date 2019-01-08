@@ -3,9 +3,10 @@ package authentication
 import (
 	"encoding/json"
 	"fmt"
-	"golang.org/x/crypto/bcrypt" //TODO: externe Lib internalisieren?
+	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
 	"log"
+	"math"
 	"net/http"
 )
 
@@ -15,18 +16,12 @@ type User struct {
 	Name     string `json:"Name"`
 	Pass     string `json:"Pass"`
 	Vacation bool   `json:"Vacation"`
-	// TODO: brauchen wir eine Liste von Tickets, die dem User zugewiesen sind?
 }
 
 // Users ist lediglich eine Auflistung meherer User
 type Users struct {
 	User []User `json:"Users"`
 }
-
-//TODO: Globale Variablen, die angeben, wer sich gerade eingeloggt - ersetzen durch prüfungen in den Funktionen selber - eigene Funktion schreiben
-var LoggedUserName string
-var LoggedUserID int
-var LoggedUserVac bool
 
 func CheckLoggedUserName(r *http.Request) string {
 	user, _, _ := r.BasicAuth()
@@ -58,7 +53,7 @@ func CheckLoggedUserVac(r *http.Request) bool {
 	return false
 }
 
-// diese Funktion öffnet das User.json und gibt eine Liste der User in FOrm eines Structs zurück
+// diese Funktion öffnet das User.json und gibt eine Liste der User in Form eines Structs zurück
 func OpenUsers() Users {
 	file, err := ioutil.ReadFile("./pkg/users/users.json")
 	if err != nil {
@@ -76,27 +71,19 @@ func OpenUsers() Users {
 	return users
 }
 
-func checkUserValid(name, pswd string) bool {
+func checkUserValid(name, pass string) bool {
 	var users = OpenUsers().User
 
 	for _, u := range users {
-		if u.Name == name && u.Pass == pswd { //TODO: Passwortprüfung mit hash-compare ersetzen
+		if u.Name == name && (checkPass(u.Pass, pass) || u.Pass == pass) { //TODO: Passwortprüfung mit hash-compare ersetzen
 			//fmt.Println("user: ", name, "| password: ", pswd)
 			//fmt.Println("---")
 			//TODO: check mit Test ersetzen
-			LoggedUserID = u.ID
-			LoggedUserName = u.Name
-			LoggedUserVac = u.Vacation
-			//fmt.Println("user: ", LoggedUserName, "| ID: ", LoggedUserID, "| Vacation: ", LoggedUserVac)
-			//fmt.Println("---")
-			//TODO: check mit Test ersetzen
+
 			return true
 			break
 		}
 	}
-	LoggedUserID = 0
-	LoggedUserName = ""
-	LoggedUserVac = false
 
 	return false
 }
@@ -121,7 +108,7 @@ func Wrapper(handler http.HandlerFunc) http.HandlerFunc {
 func saltAndHash(pass string) string {
 	passByte := []byte(pass)
 
-	hash, err := bcrypt.GenerateFromPassword(passByte, bcrypt.MinCost)
+	hash, err := bcrypt.GenerateFromPassword(passByte, bcrypt.DefaultCost)
 	if err != nil {
 		log.Println(err)
 	}
@@ -143,6 +130,55 @@ func checkPass(passHash string, passPlain string) bool {
 	return true
 }
 
+// speichert alle User im übergebenen Users-Struct in die users.json
+func saveAllUsers(u Users) error {
+	filename := "./pkg/users/users.json"
+	users, err := json.Marshal(u)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return ioutil.WriteFile(filename, users, 0600)
+}
+
 func HandlerRegister(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/index.html", http.StatusFound)
+
+	username := r.FormValue("inputName")
+	pass := r.FormValue("inputPassword")
+	passConf := r.FormValue("confirmPassword")
+	// TODO: Password Conformation in JS //passConf := r.FormValue("confirmPassword")
+
+	fmt.Println(username)
+	fmt.Println(pass)
+	fmt.Println(passConf)
+
+	users := OpenUsers()
+	oneUser := users.User
+	var counter float64 = 0
+
+	for _, u := range oneUser {
+		counter = math.Max(float64(u.ID), counter)
+	}
+
+	var newUser User
+
+	newUser.ID = int(counter) + 1
+	newUser.Name = username
+	newUser.Pass = saltAndHash(pass)
+	newUser.Vacation = false
+
+	for _, u := range oneUser {
+		if u.Name == username {
+			break
+			//TODO error bei Doppelanmeldungen
+		}
+	}
+
+	users.User = append(users.User, newUser)
+	err := saveAllUsers(users)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("---")
+
+	http.Redirect(w, r, "/index.html", http.StatusFound) // TODO: vllt noch einer Erfolgsmessage?
 }
