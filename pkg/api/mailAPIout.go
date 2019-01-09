@@ -31,7 +31,7 @@ func GetMailsFromQueue() MailQueue {
 }
 
 func saveAllMails(m MailQueue) error {
-	filename := "./pkg/users/users.json"
+	filename := "./pkg/mailQueue/mailQueue.json"
 	mails, err := json.Marshal(m)
 	if err != nil {
 		fmt.Println(err)
@@ -62,6 +62,30 @@ func FeedMailQueue(adress string, subject string, message string) { //TODO: bei 
 
 }
 
-func confirmMailSent(mailIDs []int) {
+func notContains(data int, intSlice []int) bool {
+	for _, x := range intSlice {
+		if data == x {
+			return false
+		}
+	}
+	return true
+}
+
+func ConfirmMailSent(mailIDs []int) {
+	mailQueue := GetMailsFromQueue()
+	oneMail := mailQueue.Mail
+
+	var newMailQueue MailQueue
+
+	for _, m := range oneMail {
+		if notContains(m.InternalID, mailIDs) {
+			newMailQueue.Mail = append(newMailQueue.Mail, m)
+		}
+	}
+
+	err := saveAllMails(newMailQueue)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 }
