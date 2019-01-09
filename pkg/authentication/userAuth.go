@@ -23,12 +23,14 @@ type Users struct {
 	User []User `json:"Users"`
 }
 
+// gibt den Namen des momentan eingeloggten Users aus
 func CheckLoggedUserName(r *http.Request) string {
 	user, _, _ := r.BasicAuth()
 
 	return user
 }
 
+// gibt sie ID des momentan eingeloggten Users aus
 func CheckLoggedUserID(r *http.Request) int {
 	user, _, _ := r.BasicAuth()
 	var users = OpenUsers().User
@@ -41,6 +43,7 @@ func CheckLoggedUserID(r *http.Request) int {
 	return 0
 }
 
+// gibt den Uralubsstatus des momentan eingeloggten Users aus
 func CheckLoggedUserVac(r *http.Request) bool {
 	user, _, _ := r.BasicAuth()
 	var users = OpenUsers().User
@@ -71,15 +74,12 @@ func OpenUsers() Users {
 	return users
 }
 
+// überprüft, ob die übergebene Logindaten mit einem User aus der Liste gespeicherter User übereinstimmen
 func checkUserValid(name, pass string) bool {
 	var users = OpenUsers().User
 
 	for _, u := range users {
-		if u.Name == name && (checkPass(u.Pass, pass) || u.Pass == pass) { //TODO: Passwortprüfung mit hash-compare ersetzen
-			//fmt.Println("user: ", name, "| password: ", pswd)
-			//fmt.Println("---")
-			//TODO: check mit Test ersetzen
-
+		if u.Name == name && checkPass(u.Pass, pass) {
 			return true
 			break
 		}
@@ -103,7 +103,6 @@ func Wrapper(handler http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-//TODO: Funktionen einsetzen um User anzulegen und dann zu prüfen
 // nutzt eine Funktion aus golang.org/x/crypto/bcrypt, um ein eingegebenes Passwort zu 'salten' und zu 'hashen'
 func saltAndHash(pass string) string {
 	passByte := []byte(pass)
@@ -140,16 +139,13 @@ func saveAllUsers(u Users) error {
 	return ioutil.WriteFile(filename, users, 0600)
 }
 
+// handler, der sich um die Registierung neuer User kümmert
 func HandlerRegister(w http.ResponseWriter, r *http.Request) {
 
 	username := r.FormValue("inputName")
 	pass := r.FormValue("inputPassword")
-	passConf := r.FormValue("confirmPassword")
-	// TODO: Password Conformation in JS //passConf := r.FormValue("confirmPassword")
-
-	fmt.Println(username)
-	fmt.Println(pass)
-	fmt.Println(passConf)
+	//passConf := r.FormValue("confirmPassword")
+	// TODO: Password Conformation in JS
 
 	users := OpenUsers()
 	oneUser := users.User
@@ -178,7 +174,6 @@ func HandlerRegister(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println("---")
 
-	http.Redirect(w, r, "/index.html", http.StatusFound) // TODO: vllt noch einer Erfolgsmessage?
+	http.Redirect(w, r, "/index.html", http.StatusFound) // TODO: vllt noch eine Erfolgsmessage?
 }
