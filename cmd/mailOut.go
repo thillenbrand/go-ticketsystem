@@ -43,10 +43,7 @@ func main() {
 				if number != 0 { //TODO: 0 einfügen in json als default Mail
 					mailIds = append(mailIds, number)
 				}
-				fmt.Println(number)
 			}
-			fmt.Println(mailIds)
-
 			api.ConfirmMailSent(mailIds)
 
 			fmt.Println("Mail(s) wurde(n) versendet, mögliche Befehle:")
