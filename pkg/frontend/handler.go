@@ -302,6 +302,7 @@ func HandlerEntry(w http.ResponseWriter, r *http.Request) {
 
 //Handler um Kommentare und neue Tickets zu speichern
 func HandlerSave(w http.ResponseWriter, r *http.Request) {
+	UpdateTickets()
 	//Werte aus HTML-Feldern; Datum wird automatisch ermittelt
 	subject := r.FormValue("inputSubject")
 	date := time.Now().Local().Format("2006-01-02")
@@ -354,7 +355,7 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 		UpdateTickets()
-		http.Redirect(w, r, "/index.html", http.StatusFound)
+		http.Redirect(w, r, "../index.html", http.StatusFound)
 	}
 }
 
@@ -535,11 +536,8 @@ func HandlerProfile(w http.ResponseWriter, r *http.Request) {
 
 // Handler um Änderungen des Urlaubsstatus zu speichern
 func HandlerSaveProfile(w http.ResponseWriter, r *http.Request) {
-
 	vac := r.FormValue("vac")
 	var vacBool bool
-
-	fmt.Println(vac)
 	if vac == "" {
 		vacBool = false
 	} else {
