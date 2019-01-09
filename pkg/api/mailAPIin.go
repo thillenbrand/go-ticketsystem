@@ -6,9 +6,10 @@ import (
 )
 
 type Mail struct {
-	Address string
-	Subject string
-	Text    string
+	InternalID int
+	Address    string
+	Subject    string
+	Text       string
 }
 
 func GetMail(addr string, subj string, text string) {
