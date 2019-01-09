@@ -141,11 +141,10 @@ func saveAllUsers(u Users) error {
 
 // handler, der sich um die Registierung neuer User kümmert
 func HandlerRegister(w http.ResponseWriter, r *http.Request) {
-
 	username := r.FormValue("inputName")
 	pass := r.FormValue("inputPassword")
 	//passConf := r.FormValue("confirmPassword")
-	// TODO: Password Conformation in JS
+	// TODO: Password Confirmation in JS
 
 	users := OpenUsers()
 	oneUser := users.User
@@ -156,7 +155,6 @@ func HandlerRegister(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var newUser User
-
 	newUser.ID = int(counter) + 1
 	newUser.Name = username
 	newUser.Pass = saltAndHash(pass)
