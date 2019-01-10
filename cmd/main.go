@@ -3,6 +3,8 @@
 package main
 
 import (
+	"fmt"
+	"go-ticketsystem/pkg/api"
 	auth "go-ticketsystem/pkg/authentication"
 	hand "go-ticketsystem/pkg/frontend"
 	"log"
@@ -14,10 +16,13 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	fmt.Println("HalloMain")
 
 	hand.UpdateTickets()
 
 	http.HandleFunc("/", mainHandler)
+
+	http.HandleFunc("/createTicket/", api.HandlerCreateTicket)
 
 	http.HandleFunc("/secure/dashboard.html", auth.Wrapper(hand.HandlerDashboard))
 	http.HandleFunc("/secure/ticketDetail.html", auth.Wrapper(hand.HandlerTicketDet))

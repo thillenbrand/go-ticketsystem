@@ -1,7 +1,10 @@
 package api
 
 import (
+	"fmt"
 	"go-ticketsystem/pkg/frontend"
+	"net/http"
+	"strings"
 	"time"
 )
 
@@ -12,8 +15,13 @@ type Mail struct {
 	Text       string
 }
 
-func GetMail(addr string, subj string, text string) {
-	mail := Mail{Address: addr, Subject: subj, Text: text}
+func HandlerCreateTicket(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Hallo")
+	var mail Mail
+	url := r.URL.String()
+	mail.Address = strings.Split(url, "~")[1]
+	mail.Subject = strings.Split(url, "~")[2]
+	mail.Text = strings.Split(url, "~")[3]
 	ticketExist(mail)
 }
 
