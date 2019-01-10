@@ -7,6 +7,7 @@ import (
 	hand "go-ticketsystem/pkg/frontend"
 	"log"
 	"net/http"
+	"os"
 )
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
@@ -20,7 +21,20 @@ func main() {
 		})
 	*/
 
-	hand.UpdateTickets()
+	//Checkt ob Folders tickets, users und mailQueue existieren, falls nicht werden diese erstellt.
+	if _, err := os.Stat("./pkg/tickets"); os.IsNotExist(err) {
+		os.Mkdir("./pkg/tickets", 0700)
+	}
+
+	if _, err := os.Stat("./pkg/users"); os.IsNotExist(err) {
+		os.Mkdir("./pkg/users", 0700)
+	}
+
+	if _, err := os.Stat("./pkg/mailQueue"); os.IsNotExist(err) {
+		os.Mkdir("./pkg/mailQueue", 0700)
+	}
+
+	hand.OpenTickets()
 
 	http.HandleFunc("/", mainHandler)
 
