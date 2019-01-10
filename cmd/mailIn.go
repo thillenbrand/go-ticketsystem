@@ -23,7 +23,7 @@ func main() {
 	} else {
 		os.Exit(0)
 	}
-	Sendmail(mail)
+	sendmail(mail)
 	fmt.Println("Message successfully created.")
 }
 
@@ -44,7 +44,7 @@ func entermail() {
 }
 
 //Request an Webserver, um Ticket zu erstellen
-func Sendmail(mail api.Mail) {
+func sendmail(mail api.Mail) {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	client := &http.Client{}
 	req, err := http.NewRequest("PUT", "https://localhost/createTicket/~"+mail.Address+"~"+mail.Subject+"~"+mail.Text, nil)
