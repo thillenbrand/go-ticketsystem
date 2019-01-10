@@ -1,7 +1,8 @@
+//2057008, 2624395, 9111696
+
 package api
 
 import (
-	"fmt"
 	"go-ticketsystem/pkg/frontend"
 	"net/http"
 	"strings"
@@ -15,8 +16,9 @@ type Mail struct {
 	Text       string
 }
 
+//Handler der bei mailIn.go angesprochen wird
+//liest Argumente der Mail aus der URL
 func HandlerCreateTicket(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Hallo")
 	var mail Mail
 	url := r.URL.String()
 	mail.Address = strings.Split(url, "~")[1]
@@ -25,6 +27,9 @@ func HandlerCreateTicket(w http.ResponseWriter, r *http.Request) {
 	ticketExist(mail)
 }
 
+//Prüft ob ein Ticket zu Betreff schon existiert
+// - ja -> Kommentar wird erstellt
+// - nein -> neues Ticket wird erstellt
 func ticketExist(mail Mail) bool {
 	frontend.UpdateTickets()
 	for i := 0; i < len(frontend.TicketsAll); i++ {

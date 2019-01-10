@@ -1,1 +1,10 @@
-{"Users":[{"ID":1,"Name":"admin","Pass":"$2a$10$lizNPtnyFEkiF15m9XJyHuc9P.g5fQrhBfkDuuCnEM4CbyDulp/ge","Vacation":false}]}
+{
+  "Users": [
+    {
+      "ID": 1,
+      "Name": "admin",
+      "Pass": "$2a$10$lizNPtnyFEkiF15m9XJyHuc9P.g5fQrhBfkDuuCnEM4CbyDulp/ge",
+      "Vacation": false
+    }
+  ]
+}
