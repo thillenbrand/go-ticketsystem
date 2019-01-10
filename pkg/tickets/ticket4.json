@@ -1,9 +1,9 @@
 {
   "ID": 4,
-  "Subject": "Problem",
-  "Status": "geschlossen",
-  "Assigned": false,
-  "IDEditor": 2,
+  "Subject": "Problem4",
+  "Status": "in Bearbeitung",
+  "Assigned": true,
+  "IDEditor": 1,
   "Entry": [
     {
       "Date": "2018-12-30",
@@ -22,12 +22,6 @@
       "Author": "hans@wurst.com",
       "Text": "Blablabla1.3",
       "Visible": true
-    },
-    {
-      "Date": "2019-01-01",
-      "Author": "System",
-      "Text": "Das Ticket wurde wegen Zusammenführung geschlossen. Die Einträge wurden in Ticket Nr. 2 übertragen.",
-      "Visible": false
     }
   ]
 }

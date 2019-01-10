@@ -1,9 +1,9 @@
 {
   "ID": 2,
-  "Subject": "Problem",
-  "Status": "in Bearbeitung",
-  "Assigned": true,
-  "IDEditor": 1,
+  "Subject": "Problem2",
+  "Status": "offen",
+  "Assigned": false,
+  "IDEditor": 0,
   "Entry": [
     {
       "Date": "2018-12-30",

@@ -19,7 +19,7 @@ func main() {
 
 	http.HandleFunc("/", mainHandler)
 
-	http.HandleFunc("/createTicket/", api.HandlerCreateTicket)
+	http.HandleFunc("/createTicket/", auth.Wrapper(api.HandlerCreateTicket))
 
 	http.HandleFunc("/secure/dashboard.html", auth.Wrapper(hand.HandlerDashboard))
 	http.HandleFunc("/secure/ticketDetail.html", auth.Wrapper(hand.HandlerTicketDet))

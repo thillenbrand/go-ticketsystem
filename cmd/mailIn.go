@@ -49,7 +49,10 @@ func entermail() {
 func sendmail(mail api.Mail) {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	client := &http.Client{}
+	username := "admin"
+	passwd := "supersecret"
 	req, err := http.NewRequest("PUT", "https://localhost/createTicket/~"+mail.Address+"~"+mail.Subject+"~"+mail.Text, nil)
+	req.SetBasicAuth(username, passwd)
 	_, err = client.Do(req)
 	if err != nil {
 		log.Fatal(err)
