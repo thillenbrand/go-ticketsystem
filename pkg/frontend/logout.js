@@ -1,3 +1,4 @@
+//2057008, 2624395, 9111696
 function logout() {
     //Ausloggfunktion für die Basic Authetication, die mindestens die Browser Firefox, Chrome und Internet Explorer abdeckt (jeweils Versionsunabhängig)
     try {
