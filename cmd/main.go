@@ -21,7 +21,6 @@ func main() {
 
 	http.HandleFunc("/secure/dashboard.html", auth.Wrapper(hand.HandlerDashboard))
 	http.HandleFunc("/secure/ticketDetail.html", auth.Wrapper(hand.HandlerTicketDet))
-	http.HandleFunc("/secure/tickets.html", auth.Wrapper(hand.HandlerTickets))
 	http.HandleFunc("/secure/ticketsOpen.html", auth.Wrapper(hand.HandlerOpenTickets))
 	http.HandleFunc("/secure/ticketsProcessing.html", auth.Wrapper(hand.HandlerProTickets))
 	http.HandleFunc("/secure/ticketsClosed.html", auth.Wrapper(hand.HandlerClosedTickets))

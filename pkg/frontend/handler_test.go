@@ -118,19 +118,6 @@ func TestHandlerDashboard(t *testing.T) {
 	}
 }
 
-func TestHandlerTickets(t *testing.T) {
-	req, err := http.NewRequest("GET", "/secure/tickets.html", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(HandlerTickets)
-	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
-		t.Error()
-	}
-}
-
 func TestHandlerOpenTickets(t *testing.T) {
 	req, err := http.NewRequest("GET", "/secure/ticketsOpen.html", nil)
 	if err != nil {

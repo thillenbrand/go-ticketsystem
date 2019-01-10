@@ -174,17 +174,6 @@ func HandlerDashboard(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func HandlerTickets(w http.ResponseWriter, r *http.Request) {
-	var tickets = TicketsAll
-	p := Tickets{tickets}
-	t, _ := template.ParseFiles("./pkg/frontend/secure/tickets.html")
-	w.WriteHeader(http.StatusOK)
-	err := t.Execute(w, p)
-	if err != nil {
-		fmt.Println(err)
-	}
-}
-
 //alle Tickets mit Status "offen" werden angezeigt
 func HandlerOpenTickets(w http.ResponseWriter, r *http.Request) {
 	var tickets = TicketsAll

@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-var mail api.Mail = api.Mail{}
+var mail = api.Mail{}
 
 func main() {
 	fmt.Println("Do you want to send a mail to Ticketsystem? (y/n)")
