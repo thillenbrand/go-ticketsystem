@@ -3,6 +3,7 @@ package authentication
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 	"io/ioutil"
 	"log"
@@ -88,6 +89,7 @@ func checkUserValid(name, pass string) bool {
 	return false
 }
 
+// Wrapper-Funktion, die zusätzlich zum übergebenen Handler die Athentifizierung durchführt
 func Wrapper(handler http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		user, pass, ok := r.BasicAuth()
@@ -139,13 +141,19 @@ func saveAllUsers(u Users) error {
 	return ioutil.WriteFile(filename, users, 0600)
 }
 
-// handler, der sich um die Registierung neuer User kümmert
-func HandlerRegister(w http.ResponseWriter, r *http.Request) {
-	username := r.FormValue("inputName")
-	pass := r.FormValue("inputPassword")
-	//passConf := r.FormValue("confirmPassword")
-	// TODO: Password Confirmation in JS
+// trägt einen neuen User in das bestehende User-Dokument ein
+func writeUser(users Users, newUser User) error {
+	users.User = append(users.User, newUser)
+	err := saveAllUsers(users)
+	if err != nil {
+		fmt.Println(err)
+		return errors.New("userAuth: writing the userdata into the userfile failed")
+	}
+	return nil
+}
 
+// führt das Erstellen des neuen Users als struct durch un ruft anschließend die Funktion zum Eintragen des Users auf
+func registerUser(username string, pass string) error {
 	users := OpenUsers()
 	oneUser := users.User
 	var counter float64 = 0
@@ -162,15 +170,28 @@ func HandlerRegister(w http.ResponseWriter, r *http.Request) {
 
 	for _, u := range oneUser {
 		if u.Name == username {
-			break
-			//TODO error bei Doppelanmeldungen
+			return errors.New("userAuth: username is already taken")
 		}
 	}
 
-	users.User = append(users.User, newUser)
-	err := saveAllUsers(users)
+	writeUser(users, newUser)
+
+	return nil
+}
+
+// handler, der sich um die Registierung neuer User kümmert
+func HandlerRegister(w http.ResponseWriter, r *http.Request) {
+	username := r.FormValue("inputName")
+	pass := r.FormValue("inputPassword")
+	//passConf := r.FormValue("confirmPassword")
+	// TODO: Password Confirmation in JS
+
+	err := registerUser(username, pass)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
+		http.Error(w,
+			"Der eingegebene Benutzername ist bereits vergeben!",
+			http.StatusUnauthorized)
 	}
 
 	http.Redirect(w, r, "/index.html", http.StatusFound) // TODO: vllt noch eine Erfolgsmessage?
