@@ -5,7 +5,7 @@ function logout() {
         // Ausloggen aus der Basic Authentication in Firefox durch Eingabe falscher Daten,
         $.ajax({
             url: "/secure/dashboard.html",
-            username: 'reset', //TODO: Testen, ob im IE noch der Standardname angezeigt wird
+            username: 'bitte Benutzernamen eingeben',
             password: 'irgendein_ungenutztes_Passwort',
         // Code 401 heißt, dass das Ausloggen erfolgreich war - die Exception wird dennoch geworfen (ist so vorgesehen)
             statusCode: {
