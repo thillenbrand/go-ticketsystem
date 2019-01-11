@@ -3,7 +3,7 @@
 package api
 
 import (
-	frontend "go-ticketsystem-alt/pkg/frontend"
+	"go-ticketsystem/pkg/frontend"
 	"net/http"
 	"strings"
 	"time"
@@ -32,13 +32,13 @@ func HandlerCreateTicket(w http.ResponseWriter, r *http.Request) {
 // - nein -> neues Ticket wird erstellt
 func ticketExist(mail Mail) bool {
 	frontend.UpdateTickets()
-	var tickets = frontend.TicketsByTicketID
-	for i := 0; i < len(tickets); i++ {
-		if tickets[i].Subject == mail.Subject {
-			if tickets[i].Status == "geschlossen" {
-				ticketTemp := tickets[i]
+	//var tickets = frontend.TicketsByTicketID
+	for i := 1; i <= len(frontend.TicketsByTicketID); i++ {
+		if frontend.TicketsByTicketID[i].Subject == mail.Subject {
+			if frontend.TicketsByTicketID[i].Status == "geschlossen" {
+				ticketTemp := frontend.TicketsByTicketID[i]
 				ticketTemp.Status = "offen"
-				tickets[i] = ticketTemp
+				frontend.TicketsByTicketID[i] = ticketTemp
 			}
 			entry := frontend.Entry{Date: time.Now().Local().Format("2006-01-02"), Author: mail.Address, Text: mail.Text, Visible: true}
 			entrys := append(frontend.TicketsByTicketID[i].Entry, entry)

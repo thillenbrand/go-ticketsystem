@@ -7,9 +7,9 @@ import (
 	"crypto/tls"
 	"flag"
 	"fmt"
-	api "go-ticketsystem-alt/pkg/api"
-	auth "go-ticketsystem-alt/pkg/authentication"
-	hand "go-ticketsystem-alt/pkg/frontend"
+	"go-ticketsystem/pkg/api"
+	auth "go-ticketsystem/pkg/authentication"
+	hand "go-ticketsystem/pkg/frontend"
 	"log"
 	"net/http"
 	"os"
@@ -180,7 +180,7 @@ func main() {
 			} else if strings.TrimRight(input, "\n") == "exit" {
 				fmt.Println("Programm wird geschlossen.")
 			} else {
-				fmt.Println("Ungültige Eingabe, bitte ernet versuchen.")
+				fmt.Println("Ungültige Eingabe, bitte erneut versuchen.")
 			}
 		}
 	} else {

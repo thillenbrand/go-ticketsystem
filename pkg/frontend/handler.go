@@ -77,15 +77,13 @@ var TicketsByStatus map[string][]Ticket
 //Funktion sucht alle vorhandenen Tickets in ./pkg/tickets, öffnet diese und speichert sie in verschiedenen Maps
 func OpenTickets() {
 	files, err := ioutil.ReadDir("./pkg/tickets/")
-	TicketsByTicketID = make(map[int]Ticket)
-	TicketsByEditorID = make(map[int][]Ticket)
-	TicketsByStatus = make(map[string][]Ticket)
-
 	if err != nil {
 		log.Fatal(err)
 	}
+	TicketsByTicketID = make(map[int]Ticket)
+	TicketsByEditorID = make(map[int][]Ticket)
+	TicketsByStatus = make(map[string][]Ticket)
 	for _, file := range files {
-		i := 0
 		var temporary Ticket
 		jsonFile, errorJ := os.Open("./pkg/tickets/" + file.Name())
 		if errorJ != nil {
@@ -113,7 +111,6 @@ func OpenTickets() {
 		if err != nil {
 			fmt.Println(err)
 		}
-		i++
 	}
 }
 
@@ -131,18 +128,6 @@ func HandlerDashboard(w http.ResponseWriter, r *http.Request) {
 
 	p := Tickets{ticketsDashboard}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/dashboard.html")
-	err := t.Execute(w, p)
-	if err != nil {
-		fmt.Println(err)
-	}
-}
-
-func HandlerTickets(w http.ResponseWriter, r *http.Request) {
-	OpenTickets()
-	var tickets = TicketsByTicketID
-
-	p := TBTID{tickets}
-	t, _ := template.ParseFiles("./pkg/frontend/secure/tickets.html")
 	err := t.Execute(w, p)
 	if err != nil {
 		fmt.Println(err)
@@ -343,8 +328,8 @@ func HandlerRelease(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	w.WriteHeader(http.StatusOK)
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+	w.WriteHeader(http.StatusOK)
 }
 
 //Handler zum Ticket übernehmen
@@ -363,8 +348,8 @@ func HandlerTake(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	w.WriteHeader(http.StatusOK)
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+	w.WriteHeader(http.StatusOK)
 }
 
 //Handler um Tickets zuzuweisen
@@ -389,8 +374,8 @@ func HandlerAssign(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	w.WriteHeader(http.StatusOK)
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+	w.WriteHeader(http.StatusOK)
 
 }
 
@@ -439,8 +424,8 @@ func HandlerAdd(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		w.WriteHeader(http.StatusOK)
 		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+		w.WriteHeader(http.StatusOK)
 	} else {
 		alert := "<script>alert('Zusammenführung fehlgeschlagen. Die Tickets haben nicht denselben Bearbeiter.');window.location = '/secure/ticketDetail.html?" + strconv.Itoa(ticketDet.ID) + "';</script>"
 		i, err := fmt.Fprintf(w, alert)
@@ -468,8 +453,8 @@ func HandlerClose(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	w.WriteHeader(http.StatusOK)
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
+	w.WriteHeader(http.StatusOK)
 }
 
 //Handler um Profildaten des eingeloggten Users zu laden
@@ -501,8 +486,8 @@ func HandlerSaveProfile(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	w.WriteHeader(http.StatusOK)
 	http.Redirect(w, r, "/secure/profile.html", http.StatusFound)
+	w.WriteHeader(http.StatusOK)
 }
 
 //Funktion, um von anderen Klassen Tickets zu speichern
