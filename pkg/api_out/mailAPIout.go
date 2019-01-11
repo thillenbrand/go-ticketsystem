@@ -94,7 +94,7 @@ func GetMailsFromQueue() MailQueue {
 }
 
 // speichert noch abzuschickende Mails in der Warteschlangen-Datei
-func saveAllMails(m MailQueue) error {
+func SaveAllMails(m MailQueue) error {
 	filename := "./pkg/mailQueue/mailQueue.json"
 	mails, err := json.Marshal(m)
 	if err != nil {
@@ -120,7 +120,7 @@ func FeedMailQueue(adress string, subject string, message string) error { //TODO
 	newMail.Text = message
 
 	mailQueue.Mail = append(mailQueue.Mail, newMail)
-	err := saveAllMails(mailQueue)
+	err := SaveAllMails(mailQueue)
 	if err != nil {
 		fmt.Println(err)
 		return errors.New("mailAPIout: updating the queue failed")
@@ -152,7 +152,7 @@ func ConfirmMailSent(mailIDs []int) error {
 		}
 	}
 
-	err := saveAllMails(newMailQueue)
+	err := SaveAllMails(newMailQueue)
 	if err != nil {
 		fmt.Println(err)
 		return errors.New("mailAPIout: updating the queue failed")
