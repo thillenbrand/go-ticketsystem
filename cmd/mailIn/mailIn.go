@@ -6,7 +6,7 @@ import (
 	"bufio"
 	"crypto/tls"
 	"fmt"
-	"go-ticketsystem/de/vorlesung/projekt/team11/pkg/api_in"
+	"go-ticketsystem/pkg/api_in"
 	"log"
 	"net/http"
 	"os"

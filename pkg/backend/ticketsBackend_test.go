@@ -3,7 +3,7 @@ package backend
 
 import (
 	"fmt"
-	"go-ticketsystem/de/vorlesung/projekt/team11/pkg/api_out"
+	"go-ticketsystem/pkg/api_out"
 	"net/http"
 	"net/http/httptest"
 	"os"

@@ -4,10 +4,10 @@ package main
 
 import (
 	"flag"
-	"go-ticketsystem/de/vorlesung/projekt/team11/pkg/api_in"
-	"go-ticketsystem/de/vorlesung/projekt/team11/pkg/api_out"
-	auth "go-ticketsystem/de/vorlesung/projekt/team11/pkg/authentication"
-	hand "go-ticketsystem/de/vorlesung/projekt/team11/pkg/backend"
+	"go-ticketsystem/pkg/api_in"
+	"go-ticketsystem/pkg/api_out"
+	auth "go-ticketsystem/pkg/authentication"
+	hand "go-ticketsystem/pkg/backend"
 	"log"
 	"net/http"
 	"os"

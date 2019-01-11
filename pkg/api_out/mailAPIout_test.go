@@ -5,7 +5,6 @@ package api_out
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -40,7 +39,6 @@ func TestHandlerConfirmSend(t *testing.T) {
 	handler.ServeHTTP(request, req)
 
 	status := request.Code
-	//fmt.Println(status)
 	if status != http.StatusOK {
 		t.Error()
 	}
@@ -55,11 +53,10 @@ func TestHandlerConfirmSend(t *testing.T) {
 	handler2.ServeHTTP(request2, req2)
 
 	status2 := request2.Code
-	fmt.Println(status2)
-	if status2 == http.StatusBadRequest {
+	if status2 != http.StatusBadRequest {
 		t.Error()
 	}
-	saveAllMails(mails)
+	SaveAllMails(mails)
 }
 
 func TestGetQueueFile(t *testing.T) {
@@ -68,7 +65,7 @@ func TestGetQueueFile(t *testing.T) {
 	if err != nil {
 		t.Error()
 	}
-	saveAllMails(mails)
+	SaveAllMails(mails)
 }
 
 func TestSendMailQueue(t *testing.T) {

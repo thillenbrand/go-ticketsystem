@@ -5,7 +5,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"go-ticketsystem/de/vorlesung/projekt/team11/pkg/api_out"
+	"go-ticketsystem/pkg/api_out"
 	"os"
 	"strconv"
 	"strings"
