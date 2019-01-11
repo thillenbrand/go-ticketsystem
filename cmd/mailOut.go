@@ -66,7 +66,7 @@ func main() {
 }
 
 // gibt die Mails in der Warteschlange aus
-func getMailQueue() {
+func getMailQueue() error {
 	mailQueue := api_out.GetMailsFromQueue()
 	oneMail := mailQueue.Mail
 
@@ -77,4 +77,6 @@ func getMailQueue() {
 		fmt.Println(m.Text)
 		fmt.Println("")
 	}
+
+	return nil
 }

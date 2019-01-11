@@ -137,5 +137,15 @@ func TestHandlerRegister(t *testing.T) {
 	if status != http.StatusFound {
 		t.Error()
 	}
+
+	request2 := httptest.NewRecorder()
+	handler2 := http.HandlerFunc(HandlerRegister)
+	handler2.ServeHTTP(request2, req)
+
+	status2 := request2.Code
+	fmt.Println(status2)
+	if status2 != http.StatusUnauthorized {
+		t.Error()
+	}
 	saveAllUsers(users)
 }
