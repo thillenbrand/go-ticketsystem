@@ -3,6 +3,7 @@ package backend
 
 import (
 	"fmt"
+	"go-ticketsystem/pkg/api_out"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -14,6 +15,16 @@ func init() {
 	err := os.Chdir("../../")
 	if err != nil {
 		panic(err)
+	}
+}
+
+func TestSliceAppend(t *testing.T) {
+	var tickets []Ticket
+	var entry []Entry
+	var s = len(tickets)
+	tickets = sliceAppend(tickets, Ticket{ID: len(TicketsByTicketID) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry})
+	if s == len(tickets) {
+		t.Error()
 	}
 }
 
@@ -205,6 +216,7 @@ func TestHandlerEntry(t *testing.T) {
 }
 
 func TestHandlerSave(t *testing.T) {
+	mails := api_out.GetMailsFromQueue()
 	UpdateTickets()
 	var entry []Entry
 	entry = append(entry, Entry{Date: "2019-01-01", Author: "Test", Text: "Test", Visible: true})
@@ -217,11 +229,16 @@ func TestHandlerSave(t *testing.T) {
 	}
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(HandlerSave)
+
 	handler.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusFound {
 		t.Error()
 	}
 	err = os.Remove("./pkg/tickets/ticket" + strconv.Itoa(ticket.ID) + ".json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = api_out.SaveAllMails(mails)
 	if err != nil {
 		fmt.Println(err)
 	}

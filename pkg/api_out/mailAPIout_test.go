@@ -90,7 +90,7 @@ func TestGetMailsFromQueue(t *testing.T) {
 
 func TestSaveAllMails(t *testing.T) {
 	mails := GetMailsFromQueue()
-	err := saveAllMails(mails)
+	err := SaveAllMails(mails)
 	if err != nil {
 		t.Error()
 	}
@@ -107,7 +107,7 @@ func TestFeedMailQueue(t *testing.T) {
 		t.Error()
 	}
 
-	saveAllMails(mailQueue)
+	SaveAllMails(mailQueue)
 }
 
 func TestNotContains(t *testing.T) {
@@ -133,5 +133,5 @@ func TestConfirmMailSent(t *testing.T) {
 		t.Error()
 	}
 
-	saveAllMails(mailQueue)
+	SaveAllMails(mailQueue)
 }

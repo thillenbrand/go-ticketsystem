@@ -75,6 +75,11 @@ var TicketsByEditorID map[int][]Ticket
 
 var TicketsByStatus map[string][]Ticket
 
+func sliceAppend(slice []Ticket, ticket Ticket) []Ticket {
+	var newSlice = append(slice, ticket)
+	return newSlice
+}
+
 //Funktion sucht alle vorhandenen Tickets in ./pkg/tickets, öffnet diese und speichert sie in verschiedenen Maps
 func OpenTickets() {
 	files, err := ioutil.ReadDir("./pkg/tickets/")
@@ -100,7 +105,8 @@ func OpenTickets() {
 
 		//füllen Map nach Editor ID
 		var ticketsEditorID []Ticket = TicketsByEditorID[temporary.IDEditor]
-		ticketsEditorID = append(ticketsEditorID, temporary)
+		ticketsEditorID = sliceAppend(ticketsEditorID, temporary)
+		//ticketsEditorID = append(ticketsEditorID, temporary)
 		TicketsByEditorID[temporary.IDEditor] = ticketsEditorID
 
 		//füllen Map nach Status
