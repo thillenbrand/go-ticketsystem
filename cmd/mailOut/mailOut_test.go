@@ -2,7 +2,17 @@
 
 package main
 
-import "testing"
+import (
+	"os"
+	"testing"
+)
+
+func init() {
+	err := os.Chdir("../../")
+	if err != nil {
+		panic(err)
+	}
+}
 
 func TestGetMailQueue(t *testing.T) {
 	err := getMailQueue()
