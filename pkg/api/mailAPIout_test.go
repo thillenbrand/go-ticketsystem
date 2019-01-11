@@ -3,9 +3,17 @@
 package api
 
 import (
+	"os"
 	"reflect"
 	"testing"
 )
+
+func init() {
+	err := os.Chdir("../../")
+	if err != nil {
+		panic(err)
+	}
+}
 
 func TestGetMailsFromQueue(t *testing.T) {
 	var testMailQueue MailQueue
