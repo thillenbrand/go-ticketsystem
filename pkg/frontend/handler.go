@@ -50,7 +50,7 @@ type TicketsDet struct {
 	Assigned bool    `json:"Assigned"`
 	IDEditor int     `json:"IDEditor"`
 	Entry    []Entry `json:"Entry"`
-	Tickets  []Ticket
+	Tickets  map[int]Ticket
 	Users    []authentication.User
 }
 
@@ -226,7 +226,7 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 	id := ticketID(r)
 
 	//alle verfügbaren Tickets
-	var tickets = TicketsByEditorID[authentication.CheckLoggedUserID(r)]
+	var tickets = TicketsByTicketID
 
 	//Details des ausgewählten Tickets
 	var ticketDet Ticket = TicketsByTicketID[id]
