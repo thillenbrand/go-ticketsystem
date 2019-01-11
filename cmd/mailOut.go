@@ -44,7 +44,10 @@ func main() {
 					mailIds = append(mailIds, number)
 				}
 			}
-			api.ConfirmMailSent(mailIds)
+			err := api.ConfirmMailSent(mailIds)
+			if err != nil {
+				fmt.Println(err)
+			}
 
 			fmt.Println("Mail(s) wurde(n) versendet, mögliche Befehle:")
 			fmt.Println("show - alle Mails in der Warteschlage anzeigen")
