@@ -189,9 +189,14 @@ func HandlerRegister(w http.ResponseWriter, r *http.Request) {
 	err := registerUser(username, pass)
 	if err != nil {
 		log.Println(err)
-		http.Error(w,
-			"Der eingegebene Benutzername ist bereits vergeben!",
-			http.StatusUnauthorized)
+		w.WriteHeader(http.StatusUnauthorized)
+		alert := "<script>alert('Der eingegebene Benutzername ist bereits vergeben.');window.location = '../index.html';</script>"
+		i, err := fmt.Fprintf(w, alert)
+		if err != nil {
+			fmt.Println(i)
+			fmt.Println(err)
+		}
+
 	}
 
 	http.Redirect(w, r, "/index.html", http.StatusFound) // TODO: vllt noch eine Erfolgsmessage?
