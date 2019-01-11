@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/pkg/errors"
 	"io/ioutil"
 	"log"
 	"math"
@@ -30,6 +31,7 @@ func GetMailsFromQueue() MailQueue {
 	return mailQueue
 }
 
+// speichert noch abzuschickende Mails in der Warteschlangen-Datei
 func saveAllMails(m MailQueue) error {
 	filename := "./pkg/mailQueue/mailQueue.json"
 	mails, err := json.Marshal(m)
@@ -39,7 +41,8 @@ func saveAllMails(m MailQueue) error {
 	return ioutil.WriteFile(filename, mails, 0600)
 }
 
-func FeedMailQueue(adress string, subject string, message string) { //TODO: bei Kommentar eines bearbeiters aufrufen, Kommentar und Zieladresse übergeben
+// wird genutzt um neue Mails auf die Warteschlage zu setzen
+func FeedMailQueue(adress string, subject string, message string) error { //TODO: bei Kommentar eines bearbeiters aufrufen, Kommentar und Zieladresse übergeben
 	mailQueue := GetMailsFromQueue()
 	oneMail := mailQueue.Mail
 	var counter float64 = 0
@@ -58,10 +61,13 @@ func FeedMailQueue(adress string, subject string, message string) { //TODO: bei 
 	err := saveAllMails(mailQueue)
 	if err != nil {
 		fmt.Println(err)
+		return errors.New("mailAPIout: updating the queue failed")
 	}
 
+	return nil
 }
 
+// prüft, ob ein int-slice ein bestimmtes int nicht enthält
 func notContains(data int, intSlice []int) bool {
 	for _, x := range intSlice {
 		if data == x {
@@ -71,7 +77,8 @@ func notContains(data int, intSlice []int) bool {
 	return true
 }
 
-func ConfirmMailSent(mailIDs []int) {
+// wird vom Mailserver angesprochen, löscht gesendete Mails aus der Warteschlange
+func ConfirmMailSent(mailIDs []int) error {
 	mailQueue := GetMailsFromQueue()
 	oneMail := mailQueue.Mail
 
@@ -86,6 +93,8 @@ func ConfirmMailSent(mailIDs []int) {
 	err := saveAllMails(newMailQueue)
 	if err != nil {
 		fmt.Println(err)
+		return errors.New("mailAPIout: updating the queue failed")
 	}
 
+	return nil
 }
