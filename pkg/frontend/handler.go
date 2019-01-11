@@ -121,8 +121,15 @@ func OpenTickets() {
 func HandlerDashboard(w http.ResponseWriter, r *http.Request) {
 	OpenTickets()
 	var tickets = TicketsByEditorID[authentication.CheckLoggedUserID(r)]
+	var ticketsDashboard []Ticket
 
-	p := Tickets{tickets}
+	for _, t := range tickets {
+		if t.Status == "in Bearbeitung" {
+			ticketsDashboard = append(ticketsDashboard, t)
+		}
+	}
+
+	p := Tickets{ticketsDashboard}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/dashboard.html")
 	err := t.Execute(w, p)
 	if err != nil {
@@ -158,18 +165,16 @@ func HandlerOpenTickets(w http.ResponseWriter, r *http.Request) {
 //dieselben Tickets wie im Dashboard-Handler werden ausgewählt und auf der Seite angezeigt
 func HandlerProTickets(w http.ResponseWriter, r *http.Request) {
 	OpenTickets()
-	var tickets = TicketsByStatus["in Bearbeitung"]
+	var tickets = TicketsByEditorID[authentication.CheckLoggedUserID(r)]
+	var ticketsProgress []Ticket
 
-	var yourTickets []Ticket
-	for i := 0; i < len(tickets); i++ {
-		if tickets[i].IDEditor == authentication.CheckLoggedUserID(r) {
-			if tickets[i].Status == "in Bearbeitung" {
-				yourTickets = append(yourTickets, tickets[i])
-			}
+	for _, t := range tickets {
+		if t.Status == "in Bearbeitung" {
+			ticketsProgress = append(ticketsProgress, t)
 		}
 	}
 
-	p := Tickets{yourTickets}
+	p := Tickets{ticketsProgress}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/ticketsProcessing.html")
 	err := t.Execute(w, p)
 	if err != nil {
