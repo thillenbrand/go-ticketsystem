@@ -284,7 +284,7 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 
 	//wenn subject leer ist, wird ein neuer Kommentar erstellt, ansonsten ein neues Ticket
 	if subject == "" {
-		fmt.Println("HandlerSave für Kommentare")
+
 		id = ticketID(r)
 
 		ticketDet = tickets[id]
@@ -300,7 +300,7 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 
 		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 	} else {
-		fmt.Println("HandlerSave für Ticket")
+
 		//neues Ticket wird erstellt
 		ticketDet.ID = len(tickets) + 1
 		ticketDet.Subject = subject
