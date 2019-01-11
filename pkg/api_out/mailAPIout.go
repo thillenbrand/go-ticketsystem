@@ -5,7 +5,6 @@ package api_out
 import (
 	"bytes"
 	"crypto/tls"
-	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
@@ -22,25 +21,31 @@ type Mail struct {
 	Text       string
 }
 
+type IDs struct {
+	ID []int
+}
+
 // diese struct stellt die Warteschlage dar - sie enthält eine slice aus Mails
 type MailQueue struct {
 	Mail []Mail `json:"Mail"`
 }
 
 // der Handler nimmt REST-POST-Nachrichten (idempotent) an und löscht die dadurch als versendet bestätigten Mails aus der Queue
-// jede Nachricht kann eine Mail-ID enthalten
+// jede Nachricht enthält eine JSON, in der die IDs der abgesendeten Mails angegeben werden
 func HandlerConfirmSend(w http.ResponseWriter, r *http.Request) {
 	reqBody, err := ioutil.ReadAll(r.Body)
+
 	if err != nil {
 		log.Printf("mailAPIout: Error reading body: %v", err)
 		http.Error(w, "mailAPIout: Can not read request body", http.StatusBadRequest)
 		return
 	}
-	data := binary.BigEndian.Uint64(reqBody)
-	fmt.Println(data)
-
+	var IDs IDs
+	json.Unmarshal(reqBody, &IDs)
 	var ids []int
-	ids = append(ids, int(data))
+	for _, i := range IDs.ID {
+		ids = append(ids, i)
+	}
 
 	ConfirmMailSent(ids)
 }

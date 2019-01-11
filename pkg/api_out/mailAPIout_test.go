@@ -3,6 +3,11 @@
 package api_out
 
 import (
+	"bytes"
+	"errors"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"reflect"
 	"testing"
@@ -12,6 +17,64 @@ func init() {
 	err := os.Chdir("../../")
 	if err != nil {
 		panic(err)
+	}
+}
+
+type errReader int
+
+func (errReader) Read(p []byte) (n int, err error) {
+	return 0, errors.New("test error")
+}
+
+func TestHandlerConfirmSend(t *testing.T) {
+	mails := GetMailsFromQueue()
+
+	var jsonIDs = []byte(`{"IDs": [{"ID":0}]}`)
+	req, err := http.NewRequest("POST", "/confirmSend", bytes.NewBuffer(jsonIDs))
+	if err != nil {
+		t.Error()
+	}
+
+	request := httptest.NewRecorder()
+	handler := http.HandlerFunc(HandlerConfirmSend)
+	handler.ServeHTTP(request, req)
+
+	status := request.Code
+	//fmt.Println(status)
+	if status != http.StatusOK {
+		t.Error()
+	}
+
+	req2, err2 := http.NewRequest("PUT", "/confirmSend", errReader(0))
+	if err2 != nil {
+		t.Error()
+	}
+
+	request2 := httptest.NewRecorder()
+	handler2 := http.HandlerFunc(HandlerConfirmSend)
+	handler2.ServeHTTP(request2, req2)
+
+	status2 := request2.Code
+	fmt.Println(status2)
+	if status2 == http.StatusBadRequest {
+		t.Error()
+	}
+	saveAllMails(mails)
+}
+
+func TestGetQueueFile(t *testing.T) {
+	mails := GetMailsFromQueue()
+	_, err := http.NewRequest("POST", "/getMailQueue", nil)
+	if err != nil {
+		t.Error()
+	}
+	saveAllMails(mails)
+}
+
+func TestSendMailQueue(t *testing.T) {
+	err := sendMailQueue()
+	if err != nil {
+		t.Error()
 	}
 }
 
