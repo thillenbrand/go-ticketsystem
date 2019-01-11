@@ -1,1 +1,21 @@
-{"ID":3,"Subject":"Nummer 3","Status":"geschlossen","Assigned":true,"IDEditor":1,"Entry":[{"Date":"2019-01-11","Author":"nummer.drei@me.de","Text":"Kommentar 1 zu Nummer 3","Visible":true},{"Date":"2019-01-11","Author":"System","Text":"Das Ticket wurde wegen Zusammenführung geschlossen. Die Einträge wurden in Ticket Nr. 2 übertragen.","Visible":false}]}
+{
+  "ID": 3,
+  "Subject": "Nummer 3",
+  "Status": "geschlossen",
+  "Assigned": true,
+  "IDEditor": 1,
+  "Entry": [
+    {
+      "Date": "2019-01-11",
+      "Author": "nummer.drei@me.de",
+      "Text": "Kommentar 1 zu Nummer 3",
+      "Visible": true
+    },
+    {
+      "Date": "2019-01-11",
+      "Author": "System",
+      "Text": "Das Ticket wurde wegen Zusammenführung geschlossen. Die Einträge wurden in Ticket Nr. 2 übertragen.",
+      "Visible": false
+    }
+  ]
+}
