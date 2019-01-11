@@ -185,8 +185,6 @@ func registerUser(username string, pass string) error {
 func HandlerRegister(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("inputName")
 	pass := r.FormValue("inputPassword")
-	//passConf := r.FormValue("confirmPassword")
-	// TODO: Password Confirmation in JS
 
 	err := registerUser(username, pass)
 	if err != nil {
@@ -196,5 +194,5 @@ func HandlerRegister(w http.ResponseWriter, r *http.Request) {
 			http.StatusUnauthorized)
 	}
 
-	http.Redirect(w, r, "/index.html", http.StatusFound) // TODO: vllt noch eine Erfolgsmessage?
+	http.Redirect(w, r, "/index.html", http.StatusFound)
 }

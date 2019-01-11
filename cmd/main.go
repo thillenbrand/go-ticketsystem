@@ -34,6 +34,8 @@ func main() {
 	http.HandleFunc("/", mainHandler)
 
 	http.HandleFunc("/createTicket/", auth.Wrapper(api.HandlerCreateTicket))
+	http.HandleFunc("/getMailQueue/", auth.Wrapper(api.HandlerSendMail))
+	http.HandleFunc("/confirmSend/", auth.Wrapper(api.HandlerConfirmSend))
 
 	http.HandleFunc("/secure/dashboard.html", auth.Wrapper(hand.HandlerDashboard))
 	http.HandleFunc("/secure/ticketDetail.html", auth.Wrapper(hand.HandlerTicketDet))

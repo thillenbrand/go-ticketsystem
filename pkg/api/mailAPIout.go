@@ -3,16 +3,42 @@
 package api
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
 	"io/ioutil"
 	"log"
 	"math"
+	"net/http"
 )
 
 type MailQueue struct {
 	Mail []Mail `json:"Mail"`
+}
+
+func HandlerConfirmSend(w http.ResponseWriter, r *http.Request) {
+	var ids []int //TODO: IDs aus dem Request holen
+	ConfirmMailSent(ids)
+}
+
+func HandlerSendMail(w http.ResponseWriter, r *http.Request) {
+	sendMailQueue(GetMailsFromQueue())
+}
+
+func sendMailQueue(mailQueue MailQueue) {
+	//var b bytes.Buffer = NewBuffer([]byte(mailQueue.Mail))
+
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	client := &http.Client{}
+	username := "admin"
+	passwd := "supersecret"
+	req, err := http.NewRequest("POST", "https://example.com/mails/toSend", nil) //[]byte(mailQueue)
+	req.SetBasicAuth(username, passwd)
+	_, err = client.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 // gibt die Mails in der Warteschlage als struct zurück, alternativ könnte der Mailserver auch einfach die mailQueue.json anfordern
