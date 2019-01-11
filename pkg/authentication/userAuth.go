@@ -199,5 +199,5 @@ func HandlerRegister(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	http.Redirect(w, r, "/index.html", http.StatusFound) // TODO: vllt noch eine Erfolgsmessage?
+	http.Redirect(w, r, "/index.html", http.StatusFound)
 }
