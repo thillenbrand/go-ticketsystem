@@ -5,7 +5,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"go-ticketsystem/pkg/api"
+	"go-ticketsystem/pkg/api_out"
 	"os"
 	"strconv"
 	"strings"
@@ -47,7 +47,7 @@ func main() {
 					mailIds = append(mailIds, number)
 				}
 			}
-			err := api.ConfirmMailSent(mailIds)
+			err := api_out.ConfirmMailSent(mailIds)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -67,7 +67,7 @@ func main() {
 
 // gibt die Mails in der Warteschlange aus
 func getMailQueue() {
-	mailQueue := api.GetMailsFromQueue()
+	mailQueue := api_out.GetMailsFromQueue()
 	oneMail := mailQueue.Mail
 
 	for _, m := range oneMail {

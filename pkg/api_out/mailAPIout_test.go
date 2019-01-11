@@ -1,18 +1,17 @@
 //2057008, 2624395, 9111696
 
-package api
+package api_out
 
 import (
-	"os"
 	"reflect"
 	"testing"
 )
 
 func init() {
-	err := os.Chdir("../../")
+	/*err := os.Chdir("../../")
 	if err != nil {
 		panic(err)
-	}
+	}*/
 }
 
 func TestGetMailsFromQueue(t *testing.T) {

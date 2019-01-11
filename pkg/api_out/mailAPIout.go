@@ -1,6 +1,6 @@
 //2057008, 2624395, 9111696
 
-package api
+package api_out
 
 import (
 	"bytes"
@@ -14,6 +14,13 @@ import (
 	"math"
 	"net/http"
 )
+
+type Mail struct {
+	InternalID int
+	Address    string
+	Subject    string
+	Text       string
+}
 
 // diese struct stellt die Warteschlage dar - sie enthält eine slice aus Mails
 type MailQueue struct {
