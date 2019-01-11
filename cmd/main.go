@@ -4,9 +4,9 @@ package main
 
 import (
 	"flag"
-	"go-ticketsystem/pkg/api"
+	"go-ticketsystem/pkg/api_in"
 	auth "go-ticketsystem/pkg/authentication"
-	hand "go-ticketsystem/pkg/frontend"
+	hand "go-ticketsystem/pkg/backend"
 	"log"
 	"net/http"
 	"os"
@@ -38,7 +38,7 @@ func main() {
 
 	http.HandleFunc("/", mainHandler)
 
-	http.HandleFunc("/createTicket/", auth.Wrapper(api.HandlerCreateTicket))
+	http.HandleFunc("/createTicket/", auth.Wrapper(api_in.HandlerCreateTicket))
 
 	http.HandleFunc("/secure/dashboard.html", auth.Wrapper(hand.HandlerDashboard))
 	http.HandleFunc("/secure/ticketDetail.html", auth.Wrapper(hand.HandlerTicketDet))

@@ -1,10 +1,11 @@
 //2057008, 2624395, 9111696
 
-package frontend
+package backend
 
 import (
 	"encoding/json"
 	"fmt"
+	"go-ticketsystem/pkg/api_out"
 	"go-ticketsystem/pkg/authentication"
 	"html/template"
 	"io/ioutil"
@@ -270,6 +271,7 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 		author = authentication.CheckLoggedUserName(r)
 	}
 	newEntry := Entry{date, author, text, visible}
+
 	tickets := TicketsByTicketID
 
 	var ticketDet Ticket
@@ -289,6 +291,13 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 		err := ticket.save()
 		if err != nil {
 			fmt.Println(err)
+		}
+		//wenn Visible == true ist, wird dem Ersteller des Tickets der Kommentar per Mail zugesendet
+		if newEntry.Visible == true {
+			err = api_out.FeedMailQueue(ticket.Entry[0].Author, ticket.Subject, "Von "+newEntry.Author+": "+newEntry.Text)
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
 		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 	} else {

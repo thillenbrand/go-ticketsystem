@@ -6,14 +6,14 @@ import (
 	"bufio"
 	"crypto/tls"
 	"fmt"
-	"go-ticketsystem/pkg/api"
+	"go-ticketsystem/pkg/api_in"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 )
 
-var mail = api.Mail{}
+var mail = api_in.Mail{}
 
 //Erstellen eines Tickets oder Kommentares mit der Kommandozeile
 func main() {
@@ -46,7 +46,7 @@ func entermail() {
 }
 
 //Request an Webserver, um Ticket zu erstellen
-func sendmail(mail api.Mail) {
+func sendmail(mail api_in.Mail) {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	client := &http.Client{}
 	username := "admin"
