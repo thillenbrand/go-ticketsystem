@@ -10,10 +10,9 @@ import (
 )
 
 type Mail struct {
-	InternalID int
-	Address    string
-	Subject    string
-	Text       string
+	Address string
+	Subject string
+	Text    string
 }
 
 //Prüft ob ein Ticket zu Betreff schon existiert
