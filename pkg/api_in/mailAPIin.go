@@ -54,4 +54,5 @@ func HandlerCreateTicket(w http.ResponseWriter, r *http.Request) {
 	mail.Subject = strings.Split(url, "~")[2]
 	mail.Text = strings.Split(url, "~")[3]
 	TicketExist(mail)
+	w.WriteHeader(http.StatusFound)
 }
