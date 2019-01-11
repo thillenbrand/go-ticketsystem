@@ -3,12 +3,14 @@
 package main
 
 import (
-	"go-ticketsystem/pkg/api"
+	"flag"
+	"go-ticketsystem/pkg/api_in"
 	auth "go-ticketsystem/pkg/authentication"
-	hand "go-ticketsystem/pkg/frontend"
+	hand "go-ticketsystem/pkg/backend"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
@@ -29,11 +31,14 @@ func main() {
 		os.Mkdir("./pkg/mailQueue", 0700)
 	}
 
+	var port = flag.Int("port", 443, "set port, default 443")
+	flag.Parse()
+
 	hand.UpdateTickets()
 
 	http.HandleFunc("/", mainHandler)
 
-	http.HandleFunc("/createTicket/", auth.Wrapper(api.HandlerCreateTicket))
+	http.HandleFunc("/createTicket/", auth.Wrapper(api_in.HandlerCreateTicket))
 
 	http.HandleFunc("/secure/dashboard.html", auth.Wrapper(hand.HandlerDashboard))
 	http.HandleFunc("/secure/ticketDetail.html", auth.Wrapper(hand.HandlerTicketDet))
@@ -52,7 +57,7 @@ func main() {
 	http.HandleFunc("/secure/profile.html", auth.Wrapper(hand.HandlerProfile))
 	http.HandleFunc("/register/", auth.HandlerRegister)
 
-	err := http.ListenAndServeTLS(":443", "Server.crt", "Server.key", nil)
+	err := http.ListenAndServeTLS(":"+strconv.Itoa(*port)+"", "Server.crt", "Server.key", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}

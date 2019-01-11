@@ -185,16 +185,19 @@ func registerUser(username string, pass string) error {
 func HandlerRegister(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("inputName")
 	pass := r.FormValue("inputPassword")
-	//passConf := r.FormValue("confirmPassword")
-	// TODO: Password Confirmation in JS
 
 	err := registerUser(username, pass)
 	if err != nil {
 		log.Println(err)
-		http.Error(w,
-			"Der eingegebene Benutzername ist bereits vergeben!",
-			http.StatusUnauthorized)
+		w.WriteHeader(http.StatusUnauthorized)
+		alert := "<script>alert('Der eingegebene Benutzername ist bereits vergeben.');window.location = '../index.html';</script>"
+		i, err := fmt.Fprintf(w, alert)
+		if err != nil {
+			fmt.Println(i)
+			fmt.Println(err)
+		}
+
 	}
 
-	http.Redirect(w, r, "/index.html", http.StatusFound) // TODO: vllt noch eine Erfolgsmessage?
+	http.Redirect(w, r, "/index.html", http.StatusFound)
 }

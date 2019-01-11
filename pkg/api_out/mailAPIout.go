@@ -1,6 +1,6 @@
 //2057008, 2624395, 9111696
 
-package api
+package api_out
 
 import (
 	"encoding/json"
@@ -10,6 +10,13 @@ import (
 	"log"
 	"math"
 )
+
+type Mail struct {
+	InternalID int
+	Address    string
+	Subject    string
+	Text       string
+}
 
 type MailQueue struct {
 	Mail []Mail `json:"Mail"`
@@ -65,6 +72,7 @@ func FeedMailQueue(adress string, subject string, message string) error { //TODO
 		fmt.Println(err)
 		return errors.New("mailAPIout: updating the queue failed")
 	}
+	fmt.Println("Success")
 
 	return nil
 }
