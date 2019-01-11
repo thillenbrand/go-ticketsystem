@@ -3,6 +3,7 @@
 package authentication
 
 import (
+	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"net/http/httptest"
@@ -120,6 +121,7 @@ func TestRegisterUser(t *testing.T) {
 }
 
 func TestHandlerRegister(t *testing.T) {
+	users := OpenUsers()
 	req, err := http.NewRequest("GET", "/register.html", nil)
 
 	if err != nil {
@@ -131,7 +133,9 @@ func TestHandlerRegister(t *testing.T) {
 	handler.ServeHTTP(request, req)
 
 	status := request.Code
-	if status != http.StatusUnauthorized {
+	fmt.Println(status)
+	if status != http.StatusFound {
 		t.Error()
 	}
+	saveAllUsers(users)
 }
