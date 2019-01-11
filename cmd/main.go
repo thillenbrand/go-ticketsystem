@@ -1,6 +1,6 @@
 //2057008, 2624395, 9111696
 
-package cmd
+package main
 
 import (
 	"flag"
