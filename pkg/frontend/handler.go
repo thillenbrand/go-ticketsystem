@@ -134,13 +134,13 @@ func UpdateTickets() {
 	TicketsAll = openTickets()
 }
 
-//Änderungen im Profil werden im .json gespeichert
-func saveProfile() error {
+// geänderter Urlaubsstatus wird in unsers.json gespeichert
+func setVacation(r *http.Request, vac bool) error {
 	users := authentication.OpenUsers()
 	//eingeloggter User wird ausgewählt und Urlaubswert verändert
 	for i := 0; i < len(users.User); i++ {
-		if users.User[i].ID == authentication.LoggedUserID {
-			users.User[i].Vacation = authentication.LoggedUserVac
+		if users.User[i].ID == authentication.CheckLoggedUserID(r) {
+			users.User[i].Vacation = vac
 		}
 	}
 	filename := "./pkg/users/users.json"
@@ -157,7 +157,7 @@ func HandlerDashboard(w http.ResponseWriter, r *http.Request) {
 	var yourTicket []Ticket
 	//alle tickets werden nach der ID des Users und den Status "in Bearbeitung" durchsucht und gesammelt
 	for i := 0; i < len(tickets); i++ {
-		if tickets[i].IDEditor == authentication.LoggedUserID {
+		if tickets[i].IDEditor == authentication.CheckLoggedUserID(r) {
 			if tickets[i].Status == "in Bearbeitung" {
 				yourTicket = append(yourTicket, tickets[i])
 			}
@@ -166,20 +166,12 @@ func HandlerDashboard(w http.ResponseWriter, r *http.Request) {
 	//dashboard.html wird mit den gefundenen tickets geladen
 	p := Tickets{yourTicket}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/dashboard.html")
+	w.WriteHeader(http.StatusOK)
 	err := t.Execute(w, p)
 	if err != nil {
 		fmt.Println(err)
 	}
-}
 
-func HandlerTickets(w http.ResponseWriter, r *http.Request) {
-	var tickets = TicketsAll
-	p := Tickets{tickets}
-	t, _ := template.ParseFiles("./pkg/frontend/secure/tickets.html")
-	err := t.Execute(w, p)
-	if err != nil {
-		fmt.Println(err)
-	}
 }
 
 //alle Tickets mit Status "offen" werden angezeigt
@@ -193,6 +185,7 @@ func HandlerOpenTickets(w http.ResponseWriter, r *http.Request) {
 	}
 	p := Tickets{openTicket}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/ticketsOpen.html")
+	w.WriteHeader(http.StatusOK)
 	err := t.Execute(w, p)
 	if err != nil {
 		fmt.Println(err)
@@ -204,7 +197,7 @@ func HandlerProTickets(w http.ResponseWriter, r *http.Request) {
 	var tickets = TicketsAll
 	var yourTicket []Ticket
 	for i := 0; i < len(tickets); i++ {
-		if tickets[i].IDEditor == authentication.LoggedUserID {
+		if tickets[i].IDEditor == authentication.CheckLoggedUserID(r) {
 			if tickets[i].Status == "in Bearbeitung" {
 				yourTicket = append(yourTicket, tickets[i])
 			}
@@ -212,6 +205,7 @@ func HandlerProTickets(w http.ResponseWriter, r *http.Request) {
 	}
 	p := Tickets{yourTicket}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/ticketsProcessing.html")
+	w.WriteHeader(http.StatusOK)
 	err := t.Execute(w, p)
 	if err != nil {
 		fmt.Println(err)
@@ -230,6 +224,7 @@ func HandlerClosedTickets(w http.ResponseWriter, r *http.Request) {
 	}
 	p := Tickets{closedTicket}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/ticketsClosed.html")
+	w.WriteHeader(http.StatusOK)
 	err := t.Execute(w, p)
 	if err != nil {
 		fmt.Println(err)
@@ -243,7 +238,7 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 	var user []authentication.User
 	//Angemeldeter User wird aus Dropdown entfernt
 	for i := 0; i < len(users.User); i++ {
-		if users.User[i].ID == authentication.LoggedUserID {
+		if users.User[i].ID == authentication.CheckLoggedUserID(r) {
 			user = append(users.User[:i], users.User[i+1:]...)
 		}
 	}
@@ -272,7 +267,7 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 	//Seite wird nach dem Struct TicketsDet geladen
 	p := TicketsDet{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry, Tickets: ticketsOther, Users: user}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/ticketDetail.html")
-
+	w.WriteHeader(http.StatusOK)
 	err := t.Execute(w, p)
 	if err != nil {
 		fmt.Println(err)
@@ -294,6 +289,7 @@ func HandlerEntry(w http.ResponseWriter, r *http.Request) {
 	}
 	p := Ticket{ID: ticketDet.ID, Subject: ticketDet.Subject, Status: ticketDet.Status, Assigned: ticketDet.Assigned, IDEditor: ticketDet.IDEditor, Entry: ticketDet.Entry}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/entry.html")
+	w.WriteHeader(http.StatusOK)
 	err := t.Execute(w, p)
 	if err != nil {
 		fmt.Println(err)
@@ -317,7 +313,7 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 	}
 	//Bei Kommentaren wird der Name des eingeloggten Users verwendet
 	if author == "" {
-		author = authentication.LoggedUserName
+		author = authentication.CheckLoggedUserName(r)
 	}
 	newEntry := Entry{date, author, text, visible}
 	tickets := TicketsAll
@@ -338,6 +334,7 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
+		w.WriteHeader(http.StatusOK)
 		//nach Speichern der Änderungen wird TicketsAll aktualisiert
 		UpdateTickets()
 		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
@@ -380,7 +377,7 @@ func HandlerRelease(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	UpdateTickets()
-
+	w.WriteHeader(http.StatusOK)
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 }
 
@@ -394,7 +391,7 @@ func HandlerTake(w http.ResponseWriter, r *http.Request) {
 		if tickets[i].ID == id {
 			tickets[i].Status = "in Bearbeitung"
 			tickets[i].Assigned = true
-			tickets[i].IDEditor = authentication.LoggedUserID
+			tickets[i].IDEditor = authentication.CheckLoggedUserID(r)
 			ticketDet = tickets[i]
 			break
 		}
@@ -404,6 +401,7 @@ func HandlerTake(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
+	w.WriteHeader(http.StatusOK)
 	UpdateTickets()
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 }
@@ -432,6 +430,7 @@ func HandlerAssign(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
+	w.WriteHeader(http.StatusOK)
 	UpdateTickets()
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 
@@ -483,6 +482,7 @@ func HandlerAdd(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
+		w.WriteHeader(http.StatusOK)
 		UpdateTickets()
 		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 	} else {
@@ -514,38 +514,41 @@ func HandlerClose(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
+	w.WriteHeader(http.StatusOK)
 	UpdateTickets()
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 }
 
 //Handler um Profildaten des eingeloggten Users zu laden
 func HandlerProfile(w http.ResponseWriter, r *http.Request) {
-	vac := authentication.LoggedUserVac
+	vac := authentication.CheckLoggedUserVac(r)
 	var value string
 	//wenn der User im Urlaub ist wird der Slider mit checked versehen
 	if vac == true {
 		value = "checked"
 	}
-	user := Profile{ID: authentication.LoggedUserID, Name: authentication.LoggedUserName, Pass: "", Vacation: authentication.LoggedUserVac, Value: value}
+	user := Profile{ID: authentication.CheckLoggedUserID(r), Name: authentication.CheckLoggedUserName(r), Pass: "", Vacation: authentication.CheckLoggedUserVac(r), Value: value}
 	t, _ := template.ParseFiles("./pkg/frontend/secure/profile.html")
+	w.WriteHeader(http.StatusOK)
 	err := t.Execute(w, user)
 	if err != nil {
 		fmt.Println(err)
 	}
 }
 
-//Handler um Änderungen des Urlaubsstatus zu speichern
+// Handler um Änderungen des Urlaubsstatus zu speichern
 func HandlerSaveProfile(w http.ResponseWriter, r *http.Request) {
 	vac := r.FormValue("vac")
-	fmt.Println(vac)
+	var vacBool bool
 	if vac == "" {
-		authentication.LoggedUserVac = false
+		vacBool = false
 	} else {
-		authentication.LoggedUserVac = true
+		vacBool = true
 	}
-	err := saveProfile()
+	err := setVacation(r, vacBool)
 	if err != nil {
 		fmt.Println(err)
 	}
+	w.WriteHeader(http.StatusOK)
 	http.Redirect(w, r, "/secure/profile.html", http.StatusFound)
 }

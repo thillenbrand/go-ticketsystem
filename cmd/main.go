@@ -3,6 +3,7 @@
 package main
 
 import (
+	"go-ticketsystem/pkg/api"
 	auth "go-ticketsystem/pkg/authentication"
 	hand "go-ticketsystem/pkg/frontend"
 	"log"
@@ -15,12 +16,6 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	/*
-		http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, r.URL.Path[1:])
-		})
-	*/
-
 	//Checkt ob Folders tickets, users und mailQueue existieren, falls nicht werden diese erstellt.
 	if _, err := os.Stat("./pkg/tickets"); os.IsNotExist(err) {
 		os.Mkdir("./pkg/tickets", 0700)
@@ -34,13 +29,14 @@ func main() {
 		os.Mkdir("./pkg/mailQueue", 0700)
 	}
 
-	hand.OpenTickets()
+	hand.UpdateTickets()
 
 	http.HandleFunc("/", mainHandler)
 
+	http.HandleFunc("/createTicket/", auth.Wrapper(api.HandlerCreateTicket))
+
 	http.HandleFunc("/secure/dashboard.html", auth.Wrapper(hand.HandlerDashboard))
 	http.HandleFunc("/secure/ticketDetail.html", auth.Wrapper(hand.HandlerTicketDet))
-	http.HandleFunc("/secure/tickets.html", auth.Wrapper(hand.HandlerTickets))
 	http.HandleFunc("/secure/ticketsOpen.html", auth.Wrapper(hand.HandlerOpenTickets))
 	http.HandleFunc("/secure/ticketsProcessing.html", auth.Wrapper(hand.HandlerProTickets))
 	http.HandleFunc("/secure/ticketsClosed.html", auth.Wrapper(hand.HandlerClosedTickets))
@@ -54,7 +50,7 @@ func main() {
 	http.HandleFunc("/secure/add/", auth.Wrapper(hand.HandlerAdd))
 	http.HandleFunc("/secure/assign/", auth.Wrapper(hand.HandlerAssign))
 	http.HandleFunc("/secure/profile.html", auth.Wrapper(hand.HandlerProfile))
-	http.HandleFunc("/register/", auth.Wrapper(auth.HandlerRegister))
+	http.HandleFunc("/register/", auth.HandlerRegister)
 
 	err := http.ListenAndServeTLS(":443", "Server.crt", "Server.key", nil)
 	if err != nil {
