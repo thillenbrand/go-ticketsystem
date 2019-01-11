@@ -5,8 +5,8 @@ package backend
 import (
 	"encoding/json"
 	"fmt"
-	"go-ticketsystem/pkg/api_out"
-	"go-ticketsystem/pkg/authentication"
+	"go-ticketsystem/de/vorlesung/projekt/team11/pkg/api_out"
+	"go-ticketsystem/de/vorlesung/projekt/team11/pkg/authentication"
 	"html/template"
 	"io/ioutil"
 	"log"

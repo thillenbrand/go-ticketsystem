@@ -3,7 +3,7 @@
 package api_in
 
 import (
-	"go-ticketsystem/pkg/backend"
+	"go-ticketsystem/de/vorlesung/projekt/team11/pkg/backend"
 	"net/http"
 	"strings"
 	"time"

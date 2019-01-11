@@ -4,7 +4,7 @@ package api_in
 
 import (
 	"fmt"
-	"go-ticketsystem/pkg/backend"
+	"go-ticketsystem/de/vorlesung/projekt/team11/pkg/backend"
 	"net/http"
 	"net/http/httptest"
 	"os"
