@@ -11,6 +11,7 @@ import (
 	"strings"
 )
 
+// Kommandozeilentool mit einem begrenzten Befehlssatz - ermöglicht das Einsehen der Mails in der Warteschlage und das Simunlieren des Versendens
 func main() {
 
 	fmt.Println("Dieses Kommandozeilentool kann die E-Mails anzeigen, die momentan in der Warteschlage stehen.")
@@ -64,6 +65,7 @@ func main() {
 
 }
 
+// gibt die Mails in der Warteschlange aus
 func getMailQueue() {
 	mailQueue := api.GetMailsFromQueue()
 	oneMail := mailQueue.Mail
