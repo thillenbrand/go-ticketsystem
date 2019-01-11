@@ -36,6 +36,12 @@ func TestTicketExist(t *testing.T) {
 		fmt.Println(err)
 	}
 	frontend.UpdateTickets()
+	id = strconv.Itoa(len(frontend.TicketsByTicketID))
+	err = os.Remove("./pkg/tickets/ticket" + id + ".json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	frontend.UpdateTickets()
 }
 
 func TestTicketExist2(t *testing.T) {
