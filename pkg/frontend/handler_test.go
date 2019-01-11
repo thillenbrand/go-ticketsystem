@@ -114,7 +114,7 @@ func TestHandlerDashboard(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(HandlerDashboard)
 	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
+	if status := rr.Code; status != http.StatusFound {
 		t.Error()
 	}
 }
@@ -127,7 +127,7 @@ func TestHandlerOpenTickets(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(HandlerOpenTickets)
 	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
+	if status := rr.Code; status != http.StatusFound {
 		t.Error()
 	}
 }
@@ -140,7 +140,7 @@ func TestHandlerProTickets(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(HandlerProTickets)
 	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
+	if status := rr.Code; status != http.StatusFound {
 		t.Error()
 	}
 }
@@ -153,7 +153,7 @@ func TestHandlerClosedTickets(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(HandlerClosedTickets)
 	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
+	if status := rr.Code; status != http.StatusFound {
 		t.Error()
 	}
 }
@@ -172,7 +172,7 @@ func TestHandlerTicketDet(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(HandlerTicketDet)
 	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
+	if status := rr.Code; status != http.StatusFound {
 		t.Error()
 	}
 	err = os.Remove("./pkg/tickets/ticket" + strconv.Itoa(ticket.ID) + ".json")
@@ -195,7 +195,7 @@ func TestHandlerEntry(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(HandlerEntry)
 	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
+	if status := rr.Code; status != http.StatusFound {
 		t.Error()
 	}
 	err = os.Remove("./pkg/tickets/ticket" + strconv.Itoa(ticket.ID) + ".json")
@@ -218,7 +218,7 @@ func TestHandlerSave(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(HandlerSave)
 	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
+	if status := rr.Code; status != http.StatusFound {
 		t.Error()
 	}
 	err = os.Remove("./pkg/tickets/ticket" + strconv.Itoa(ticket.ID) + ".json")
@@ -241,7 +241,7 @@ func TestHandlerRelease(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(HandlerRelease)
 	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
+	if status := rr.Code; status != http.StatusFound {
 		t.Error()
 	}
 	err = os.Remove("./pkg/tickets/ticket" + strconv.Itoa(ticket.ID) + ".json")
@@ -264,7 +264,7 @@ func TestHandlerTake(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(HandlerTake)
 	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
+	if status := rr.Code; status != http.StatusFound {
 		t.Error()
 	}
 	err = os.Remove("./pkg/tickets/ticket" + strconv.Itoa(ticket.ID) + ".json")
@@ -287,7 +287,7 @@ func TestHandlerAssign(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(HandlerAssign)
 	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
+	if status := rr.Code; status != http.StatusFound {
 		t.Error()
 	}
 	err = os.Remove("./pkg/tickets/ticket" + strconv.Itoa(ticket.ID) + ".json")
@@ -310,7 +310,7 @@ func TestHandlerAdd(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(HandlerAdd)
 	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
+	if status := rr.Code; status != http.StatusFound {
 		t.Error()
 	}
 	err = os.Remove("./pkg/tickets/ticket" + strconv.Itoa(ticket.ID) + ".json")
@@ -337,7 +337,7 @@ func TestHandlerClose(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(HandlerClose)
 	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
+	if status := rr.Code; status != http.StatusFound {
 		t.Error()
 	}
 	err = os.Remove("./pkg/tickets/ticket" + strconv.Itoa(ticket.ID) + ".json")
@@ -354,7 +354,7 @@ func TestHandlerProfile(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(HandlerProfile)
 	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
+	if status := rr.Code; status != http.StatusFound {
 		t.Error()
 	}
 }
@@ -367,7 +367,7 @@ func TestHandlerSaveProfile(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(HandlerSaveProfile)
 	handler.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusOK {
+	if status := rr.Code; status != http.StatusFound {
 		t.Error()
 	}
 }
