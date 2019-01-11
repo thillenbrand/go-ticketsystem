@@ -21,10 +21,10 @@ func TestOpenTickets(t *testing.T) {
 	UpdateTickets()
 	var entry []Entry
 	entry = append(entry, Entry{Date: "2019-01-01", Author: "Test", Text: "Test", Visible: true})
-	ticket := &Ticket{ID: len(TicketsAll) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
+	ticket := &Ticket{ID: len(TicketsByTicketID) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
 	SaveExternal(ticket)
-	var tickets = openTickets()
-	if len(tickets) == 0 {
+	OpenTickets()
+	if len(TicketsByTicketID) == 0 {
 		t.Error()
 	}
 	err := os.Remove("./pkg/tickets/ticket" + strconv.Itoa(ticket.ID) + ".json")
@@ -42,13 +42,13 @@ func TestTicketID(t *testing.T) {
 
 func TestSaveExternal(t *testing.T) {
 	UpdateTickets()
-	start := len(TicketsAll)
+	start := len(TicketsByTicketID)
 	var entry []Entry
 	entry = append(entry, Entry{Date: "2019-01-01", Author: "Test", Text: "Test", Visible: true})
-	ticket := &Ticket{ID: len(TicketsAll) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
+	ticket := &Ticket{ID: len(TicketsByTicketID) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
 	SaveExternal(ticket)
 	UpdateTickets()
-	if len(TicketsAll) == start {
+	if len(TicketsByTicketID) == start {
 		t.Error()
 	}
 	err := os.Remove("./pkg/tickets/ticket" + strconv.Itoa(ticket.ID) + ".json")
@@ -60,16 +60,16 @@ func TestSaveExternal(t *testing.T) {
 
 func TestSave(t *testing.T) {
 	UpdateTickets()
-	start := len(TicketsAll)
+	start := len(TicketsByTicketID)
 	var entry []Entry
 	entry = append(entry, Entry{Date: "2019-01-01", Author: "Test", Text: "Test", Visible: true})
-	ticket := &Ticket{ID: len(TicketsAll) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
+	ticket := &Ticket{ID: len(TicketsByTicketID) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
 	err := ticket.save()
 	if err != nil {
 		fmt.Println(err)
 	}
 	UpdateTickets()
-	if len(TicketsAll) == start {
+	if len(TicketsByTicketID) == start {
 		t.Error()
 	}
 	err = os.Remove("./pkg/tickets/ticket" + strconv.Itoa(ticket.ID) + ".json")
@@ -80,13 +80,13 @@ func TestSave(t *testing.T) {
 }
 
 func TestUpdateTickets(t *testing.T) {
-	start := len(TicketsAll)
+	start := len(TicketsByTicketID)
 	var entry []Entry
 	entry = append(entry, Entry{Date: "2019-01-01", Author: "Test", Text: "Test", Visible: true})
-	ticket := &Ticket{ID: len(TicketsAll) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
+	ticket := &Ticket{ID: len(TicketsByTicketID) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
 	SaveExternal(ticket)
 	UpdateTickets()
-	if len(TicketsAll) == start {
+	if len(TicketsByTicketID) == start {
 		t.Error()
 	}
 	err := os.Remove("./pkg/tickets/ticket" + strconv.Itoa(ticket.ID) + ".json")
@@ -162,7 +162,7 @@ func TestHandlerTicketDet(t *testing.T) {
 	UpdateTickets()
 	var entry []Entry
 	entry = append(entry, Entry{Date: "2019-01-01", Author: "Test", Text: "Test", Visible: true})
-	ticket := &Ticket{ID: len(TicketsAll) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
+	ticket := &Ticket{ID: len(TicketsByTicketID) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
 	SaveExternal(ticket)
 	UpdateTickets()
 	req, err := http.NewRequest("GET", "/secure/ticketDetail.html?"+strconv.Itoa(ticket.ID), nil)
@@ -185,7 +185,7 @@ func TestHandlerEntry(t *testing.T) {
 	UpdateTickets()
 	var entry []Entry
 	entry = append(entry, Entry{Date: "2019-01-01", Author: "Test", Text: "Test", Visible: true})
-	ticket := &Ticket{ID: len(TicketsAll) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
+	ticket := &Ticket{ID: len(TicketsByTicketID) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
 	SaveExternal(ticket)
 	UpdateTickets()
 	req, err := http.NewRequest("GET", "/secure/entry.html?"+strconv.Itoa(ticket.ID), nil)
@@ -208,7 +208,7 @@ func TestHandlerSave(t *testing.T) {
 	UpdateTickets()
 	var entry []Entry
 	entry = append(entry, Entry{Date: "2019-01-01", Author: "Test", Text: "Test", Visible: true})
-	ticket := &Ticket{ID: len(TicketsAll) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
+	ticket := &Ticket{ID: len(TicketsByTicketID) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
 	SaveExternal(ticket)
 	UpdateTickets()
 	req, err := http.NewRequest("GET", "/secure/save/ticket?"+strconv.Itoa(ticket.ID), nil)
@@ -231,7 +231,7 @@ func TestHandlerRelease(t *testing.T) {
 	UpdateTickets()
 	var entry []Entry
 	entry = append(entry, Entry{Date: "2019-01-01", Author: "Test", Text: "Test", Visible: true})
-	ticket := &Ticket{ID: len(TicketsAll) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
+	ticket := &Ticket{ID: len(TicketsByTicketID) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
 	SaveExternal(ticket)
 	UpdateTickets()
 	req, err := http.NewRequest("GET", "/secure/release/ticket?"+strconv.Itoa(ticket.ID), nil)
@@ -254,7 +254,7 @@ func TestHandlerTake(t *testing.T) {
 	UpdateTickets()
 	var entry []Entry
 	entry = append(entry, Entry{Date: "2019-01-01", Author: "Test", Text: "Test", Visible: true})
-	ticket := &Ticket{ID: len(TicketsAll) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
+	ticket := &Ticket{ID: len(TicketsByTicketID) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
 	SaveExternal(ticket)
 	UpdateTickets()
 	req, err := http.NewRequest("GET", "/secure/take/ticket?"+strconv.Itoa(ticket.ID), nil)
@@ -277,7 +277,7 @@ func TestHandlerAssign(t *testing.T) {
 	UpdateTickets()
 	var entry []Entry
 	entry = append(entry, Entry{Date: "2019-01-01", Author: "Test", Text: "Test", Visible: true})
-	ticket := &Ticket{ID: len(TicketsAll) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
+	ticket := &Ticket{ID: len(TicketsByTicketID) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
 	SaveExternal(ticket)
 	UpdateTickets()
 	req, err := http.NewRequest("GET", "/secure/assign/ticket?"+strconv.Itoa(ticket.ID), nil)
@@ -300,7 +300,7 @@ func TestHandlerAdd(t *testing.T) {
 	UpdateTickets()
 	var entry []Entry
 	entry = append(entry, Entry{Date: "2019-01-01", Author: "Test", Text: "Test", Visible: true})
-	ticket := &Ticket{ID: len(TicketsAll) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
+	ticket := &Ticket{ID: len(TicketsByTicketID) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
 	SaveExternal(ticket)
 	UpdateTickets()
 	req, err := http.NewRequest("GET", "/secure/add/ticket?"+strconv.Itoa(ticket.ID), nil)
@@ -327,7 +327,7 @@ func TestHandlerClose(t *testing.T) {
 	UpdateTickets()
 	var entry []Entry
 	entry = append(entry, Entry{Date: "2019-01-01", Author: "Test", Text: "Test", Visible: true})
-	ticket := &Ticket{ID: len(TicketsAll) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
+	ticket := &Ticket{ID: len(TicketsByTicketID) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry}
 	SaveExternal(ticket)
 	UpdateTickets()
 	req, err := http.NewRequest("GET", "/secure/close/ticket?"+strconv.Itoa(ticket.ID), nil)

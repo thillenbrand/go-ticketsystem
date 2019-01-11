@@ -5,7 +5,7 @@ package frontend
 import (
 	"encoding/json"
 	"fmt"
-	"go-ticketsystem/pkg/authentication"
+	authentication "go-ticketsystem-alt/pkg/authentication"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -50,7 +50,7 @@ type TicketsDet struct {
 	Assigned bool    `json:"Assigned"`
 	IDEditor int     `json:"IDEditor"`
 	Entry    []Entry `json:"Entry"`
-	Tickets  map[int]Ticket
+	Tickets  []Ticket
 	Users    []authentication.User
 }
 
@@ -226,7 +226,7 @@ func HandlerTicketDet(w http.ResponseWriter, r *http.Request) {
 	id := ticketID(r)
 
 	//alle verfügbaren Tickets
-	var tickets = TicketsByTicketID
+	var tickets = TicketsByEditorID[authentication.CheckLoggedUserID(r)]
 
 	//Details des ausgewählten Tickets
 	var ticketDet Ticket = TicketsByTicketID[id]
@@ -404,10 +404,10 @@ func HandlerAdd(w http.ResponseWriter, r *http.Request) {
 
 	//aktuelles Ticket
 	var ticketDet Ticket = tickets[id]
-	fmt.Println(ticketDet)
+
 	//Ticket das angehängt werden soll
 	var ticketToAdd Ticket = tickets[idToAdd]
-	fmt.Println(ticketToAdd)
+
 	//Tickets dürfen nur zusammengefügt werden, wenn sie den gleichen Bearbeiter haben
 	if ticketToAdd.IDEditor == ticketDet.IDEditor {
 		for i := 0; i < len(ticketToAdd.Entry); i++ {
