@@ -59,7 +59,7 @@ func main() {
 		} else if strings.TrimRight(input, "\n") == "exit" {
 			fmt.Println("Programm wird geschlossen.")
 		} else {
-			fmt.Println("Ungültige Eingabe, bitte ernet versuchen.")
+			fmt.Println("Ungültige Eingabe, bitte erneut versuchen.")
 		}
 	}
 

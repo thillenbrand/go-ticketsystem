@@ -5,6 +5,7 @@ package main
 import (
 	"flag"
 	"go-ticketsystem/pkg/api_in"
+	"go-ticketsystem/pkg/api_out"
 	auth "go-ticketsystem/pkg/authentication"
 	hand "go-ticketsystem/pkg/backend"
 	"log"
@@ -38,6 +39,8 @@ func main() {
 
 	http.HandleFunc("/", mainHandler)
 
+	http.HandleFunc("/getMailQueue/", auth.Wrapper(api_out.HandlerSendMail))
+	http.HandleFunc("/confirmSend/", auth.Wrapper(api_out.HandlerConfirmSend))
 	http.HandleFunc("/createTicket/", auth.Wrapper(api_in.HandlerCreateTicket))
 
 	http.HandleFunc("/secure/dashboard.html", auth.Wrapper(hand.HandlerDashboard))
