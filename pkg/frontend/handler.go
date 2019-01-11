@@ -5,7 +5,7 @@ package frontend
 import (
 	"encoding/json"
 	"fmt"
-	authentication "go-ticketsystem-alt/pkg/authentication"
+	"go-ticketsystem/pkg/authentication"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -302,7 +302,7 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
-
+		w.WriteHeader(http.StatusOK)
 		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 	} else {
 
@@ -322,7 +322,7 @@ func HandlerSave(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
-
+		w.WriteHeader(http.StatusOK)
 		http.Redirect(w, r, "/index.html", http.StatusFound)
 	}
 }
@@ -343,7 +343,7 @@ func HandlerRelease(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
+	w.WriteHeader(http.StatusOK)
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 }
 
@@ -363,7 +363,7 @@ func HandlerTake(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
+	w.WriteHeader(http.StatusOK)
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 }
 
@@ -389,7 +389,7 @@ func HandlerAssign(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
+	w.WriteHeader(http.StatusOK)
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 
 }
@@ -439,7 +439,7 @@ func HandlerAdd(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
-
+		w.WriteHeader(http.StatusOK)
 		http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 	} else {
 		alert := "<script>alert('Zusammenführung fehlgeschlagen. Die Tickets haben nicht denselben Bearbeiter.');window.location = '/secure/ticketDetail.html?" + strconv.Itoa(ticketDet.ID) + "';</script>"
@@ -468,7 +468,7 @@ func HandlerClose(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-
+	w.WriteHeader(http.StatusOK)
 	http.Redirect(w, r, "/secure/ticketDetail.html?"+strconv.Itoa(id), http.StatusFound)
 }
 
