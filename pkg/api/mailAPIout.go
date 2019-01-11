@@ -3,7 +3,9 @@
 package api
 
 import (
+	"bytes"
 	"crypto/tls"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
@@ -13,44 +15,69 @@ import (
 	"net/http"
 )
 
+// diese struct stellt die Warteschlage dar - sie enthält eine slice aus Mails
 type MailQueue struct {
 	Mail []Mail `json:"Mail"`
 }
 
+// der Handler nimmt REST-POST-Nachrichten (idempotent) an und löscht die dadurch als versendet bestätigten Mails aus der Queue
+// jede Nachricht kann eine Mail-ID enthalten
 func HandlerConfirmSend(w http.ResponseWriter, r *http.Request) {
-	var ids []int //TODO: IDs aus dem Request holen
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("mailAPIout: Error reading body: %v", err)
+		http.Error(w, "mailAPIout: Can not read request body", http.StatusBadRequest)
+		return
+	}
+	data := binary.BigEndian.Uint64(reqBody)
+	fmt.Println(data)
+
+	var ids []int
+	ids = append(ids, int(data))
+
 	ConfirmMailSent(ids)
 }
 
+// der Handler sendet die momentane Warteschlage an den Mailserver, unabhängig von der eingehenden Nachricht - es gibt keine Änderungen auf dem Server hier selbst (nullipotent)
 func HandlerSendMail(w http.ResponseWriter, r *http.Request) {
-	sendMailQueue(GetMailsFromQueue())
+	sendMailQueue()
 }
 
-func sendMailQueue(mailQueue MailQueue) {
-	//var b bytes.Buffer = NewBuffer([]byte(mailQueue.Mail))
-
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-	client := &http.Client{}
-	username := "admin"
-	passwd := "supersecret"
-	req, err := http.NewRequest("POST", "https://example.com/mails/toSend", nil) //[]byte(mailQueue)
-	req.SetBasicAuth(username, passwd)
-	_, err = client.Do(req)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-// gibt die Mails in der Warteschlage als struct zurück, alternativ könnte der Mailserver auch einfach die mailQueue.json anfordern
-func GetMailsFromQueue() MailQueue {
+// gibt die Warteschlage aus Mails als byte-slice aus
+func getQueueFile() []byte {
 	file, err := ioutil.ReadFile("./pkg/mailQueue/mailQueue.json")
 	if err != nil {
 		fmt.Println(err)
 		log.Fatal(err)
 	}
+
+	return file
+}
+
+// sendet die moemtane Warteschlage an den Mailserver, nutzt https und Basic Authentication (admin:supersecret)
+func sendMailQueue() error {
+	var jsonStr = []byte(getQueueFile())
+
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	client := &http.Client{}
+	username := "admin"
+	passwd := "supersecret"
+	req, err := http.NewRequest("POST", "https://example.com/mails/toSend", bytes.NewBuffer(jsonStr)) //hier wird die Adresse des Mailservers statt example.com eingetragen
+	req.SetBasicAuth(username, passwd)
+	_, err = client.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
+}
+
+// gibt die Mails in der Warteschlage als struct zurück - die API selbst
+func GetMailsFromQueue() MailQueue {
+
 	var mailQueue MailQueue
 
-	err = json.Unmarshal(file, &mailQueue)
+	err := json.Unmarshal(getQueueFile(), &mailQueue)
 	if err != nil {
 		fmt.Println(err)
 		log.Fatal(err)
