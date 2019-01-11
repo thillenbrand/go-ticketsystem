@@ -3,15 +3,16 @@
 package api_out
 
 import (
+	"os"
 	"reflect"
 	"testing"
 )
 
 func init() {
-	/*err := os.Chdir("../../")
+	err := os.Chdir("../../")
 	if err != nil {
 		panic(err)
-	}*/
+	}
 }
 
 func TestGetMailsFromQueue(t *testing.T) {
