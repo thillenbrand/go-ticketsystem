@@ -3,10 +3,10 @@
 package backend
 
 import (
+	"../api_out"
+	"../authentication"
 	"encoding/json"
 	"fmt"
-	"go-ticketsystem/pkg/api_out"
-	"go-ticketsystem/pkg/authentication"
 	"html/template"
 	"io/ioutil"
 	"log"

@@ -3,9 +3,9 @@
 package main
 
 import (
+	"../../pkg/api_out"
 	"bufio"
 	"fmt"
-	"go-ticketsystem/pkg/api_out"
 	"os"
 	"strconv"
 	"strings"

@@ -2,8 +2,8 @@
 package backend
 
 import (
+	"../api_out"
 	"fmt"
-	"go-ticketsystem/pkg/api_out"
 	"net/http"
 	"net/http/httptest"
 	"os"

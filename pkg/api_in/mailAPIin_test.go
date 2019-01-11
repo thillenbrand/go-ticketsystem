@@ -3,8 +3,8 @@
 package api_in
 
 import (
+	"../backend"
 	"fmt"
-	"go-ticketsystem/pkg/backend"
 	"net/http"
 	"net/http/httptest"
 	"os"

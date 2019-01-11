@@ -3,11 +3,11 @@
 package main
 
 import (
+	"../../pkg/api_in"
+	"../../pkg/api_out"
+	auth "../../pkg/authentication"
+	hand "../../pkg/backend"
 	"flag"
-	"go-ticketsystem/pkg/api_in"
-	"go-ticketsystem/pkg/api_out"
-	auth "go-ticketsystem/pkg/authentication"
-	hand "go-ticketsystem/pkg/backend"
 	"log"
 	"net/http"
 	"os"
