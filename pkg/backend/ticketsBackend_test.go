@@ -17,6 +17,16 @@ func init() {
 	}
 }
 
+func TestSliceAppend(t *testing.T) {
+	var tickets []Ticket
+	var entry []Entry
+	var s = len(tickets)
+	tickets = sliceAppend(tickets, Ticket{ID: len(TicketsByTicketID) + 1, Subject: "Test", Status: "offen", Assigned: false, IDEditor: 0, Entry: entry})
+	if s == len(tickets) {
+		t.Error()
+	}
+}
+
 func TestOpenTickets(t *testing.T) {
 	UpdateTickets()
 	var entry []Entry
