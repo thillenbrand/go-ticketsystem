@@ -27,7 +27,7 @@ func main() {
 
 		if strings.TrimRight(input, "\n") == "show" {
 			fmt.Println("Die E-Mails in der Warteschlage werden nun angezeigt:")
-			getMailQueue() //TODO: mit gefüllter json testen
+			getMailQueue()
 			fmt.Println("")
 			fmt.Println("Alle Mails in der Warteschlage wurden angezeigt, mögliche Befehle:")
 			fmt.Println("show - alle Mails in der Warteschlage anzeigen")
@@ -43,7 +43,7 @@ func main() {
 
 			for _, id := range ids {
 				number, _ := strconv.Atoi(id)
-				if number != 0 { //TODO: 0 einfügen in json als default Mail
+				if number != 0 {
 					mailIds = append(mailIds, number)
 				}
 			}

@@ -109,7 +109,7 @@ func SaveAllMails(m MailQueue) error {
 }
 
 // wird genutzt um neue Mails auf die Warteschlage zu setzen
-func FeedMailQueue(adress string, subject string, message string) error { //TODO: bei Kommentar eines bearbeiters aufrufen, Kommentar und Zieladresse übergeben
+func FeedMailQueue(adress string, subject string, message string) error {
 	mailQueue := GetMailsFromQueue()
 	oneMail := mailQueue.Mail
 	var counter float64 = 0
